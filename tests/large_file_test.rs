@@ -222,7 +222,9 @@ fn test_progress_accuracy_100mb() {
 	for line in stdout.lines() {
 		if let Ok(event) = serde_json::from_str::<serde_json::Value>(line) {
 			let event_type = event["type"].as_str().unwrap_or("");
-			if (event_type == "create" || event_type == "update") && let Some(bytes) = event["bytes_transferred"].as_u64() {
+			if (event_type == "create" || event_type == "update")
+				&& let Some(bytes) = event["bytes_transferred"].as_u64()
+			{
 				total_bytes += bytes;
 			}
 		}
