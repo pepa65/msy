@@ -952,7 +952,7 @@ Or install from local source with: cargo install --path . --features acl"#
             };
         } else {
             println!(
-                "Bytes transferred / duration / rate: {}  {}  {}/s",
+                "Bytes transferred / duration / rate:  {}  {}  {}/s",
                 format_bytes(stats.bytes_transferred),
                 format_duration(stats.duration),
                 format_bytes(bytes_per_sec as u64),
