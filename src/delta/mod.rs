@@ -8,29 +8,29 @@ pub mod rolling;
 #[allow(unused_imports)]
 pub use applier::apply_delta;
 #[allow(unused_imports)]
-pub use checksum::{compute_checksums, BlockChecksum};
+pub use checksum::{BlockChecksum, compute_checksums};
 #[allow(unused_imports)]
-pub use generator::{generate_delta, generate_delta_streaming, Delta, DeltaOp};
+pub use generator::{Delta, DeltaOp, generate_delta, generate_delta_streaming};
 #[allow(unused_imports)]
-pub use ratio::{estimate_change_ratio, ChangeRatioResult};
+pub use ratio::{ChangeRatioResult, estimate_change_ratio};
 pub use rolling::Adler32;
 
 /// Default block size calculation: sqrt(filesize)
 /// Capped between 512 bytes and 128KB
 pub fn calculate_block_size(file_size: u64) -> usize {
-    let size = (file_size as f64).sqrt() as usize;
-    size.clamp(512, 128 * 1024)
+	let size = (file_size as f64).sqrt() as usize;
+	size.clamp(512, 128 * 1024)
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+	use super::*;
 
-    #[test]
-    fn test_block_size_calculation() {
-        assert_eq!(calculate_block_size(1024), 512); // Min size
-        assert_eq!(calculate_block_size(1_000_000), 1000); // sqrt(1M) = 1000
-        assert_eq!(calculate_block_size(100_000_000), 10000); // sqrt(100M) = 10000
-        assert_eq!(calculate_block_size(100_000_000_000), 128 * 1024); // Capped at 128KB
-    }
+	#[test]
+	fn test_block_size_calculation() {
+		assert_eq!(calculate_block_size(1024), 512); // Min size
+		assert_eq!(calculate_block_size(1_000_000), 1000); // sqrt(1M) = 1000
+		assert_eq!(calculate_block_size(100_000_000), 10000); // sqrt(100M) = 10000
+		assert_eq!(calculate_block_size(100_000_000_000), 128 * 1024); // Capped at 128KB
+	}
 }

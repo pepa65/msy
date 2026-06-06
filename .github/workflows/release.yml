@@ -31,6 +31,7 @@ jobs:
       tag: ${{ steps.version.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
 
       - name: Get version from tag or Cargo.toml
         id: version
@@ -80,7 +81,7 @@ jobs:
           fi
 
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev
+        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -113,14 +114,15 @@ jobs:
             target: aarch64-apple-darwin
             artifact_name: sy-aarch64-apple-darwin
           - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            artifact_name: sy-x86_64-unknown-linux-gnu
+            target: x86_64-unknown-linux-musl
+            artifact_name: sy-x86_64-unknown-linux-musl
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
 
       - name: Install system dependencies (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev
+        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -159,6 +161,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
 
       - uses: actions/download-artifact@v4
         with:
@@ -206,7 +209,7 @@ jobs:
 
       - name: Install system dependencies
         if: steps.check.outputs.skip != 'true'
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev
+        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
 
       - uses: dtolnay/rust-toolchain@stable
         if: steps.check.outputs.skip != 'true'

@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
       - uses: rustsec/audit-check@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -43,6 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
       - uses: EmbarkStudios/cargo-deny-action@v2
 
   clippy:
@@ -50,8 +52,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev
+        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
@@ -68,8 +71,9 @@ jobs:
     needs: [fmt, clippy]
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev
+        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Run tests
@@ -82,6 +86,7 @@ jobs:
     needs: [fmt, clippy]
     steps:
       - uses: actions/checkout@v4
+      - run: rustup target add x86_64-unknown-linux-musl
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Run tests
