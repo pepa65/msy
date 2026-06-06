@@ -155,7 +155,7 @@ fn test_many_small_files() {
 		fs::write(source.path().join(format!("file_{}.txt", i)), format!("content_{}", i)).unwrap();
 	}
 
-	let output = Command::new(sy_bin()).args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
+	let output = Command::new(sy_bin()).args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
 
 	assert!(output.status.success());
 
@@ -178,7 +178,7 @@ fn test_same_source_and_dest() {
 
 	// Try to sync directory to itself
 	let output = Command::new(sy_bin())
-		.args([&format!("{}/", source.path().display()), &format!("{}/", source.path().display())])
+		.args(["-v", &format!("{}/", source.path().display()), &format!("{}/", source.path().display())])
 		.output()
 		.unwrap();
 

@@ -129,7 +129,7 @@ fn test_update_existing_files() {
 	fs::write(source.path().join("file.txt"), "v2").unwrap();
 
 	// Sync again
-	let output = Command::new(sy_bin()).args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
+	let output = Command::new(sy_bin()).args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
 
 	assert!(output.status.success());
 	assert_eq!(fs::read_to_string(dest.path().join("file.txt")).unwrap(), "v2");
@@ -146,13 +146,13 @@ fn test_skip_unchanged_files() {
 
 	// First sync (exclude .git to get predictable file counts)
 	Command::new(sy_bin())
-		.args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
 		.output()
 		.unwrap();
 
 	// Second sync (should skip)
 	let output = Command::new(sy_bin())
-		.args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
 		.output()
 		.unwrap();
 
@@ -239,7 +239,7 @@ fn test_update_shows_correct_stats() {
 
 	// Initial sync (exclude .git for predictable file counts)
 	let output = Command::new(sy_bin())
-		.args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
 		.output()
 		.unwrap();
 
@@ -256,7 +256,7 @@ fn test_update_shows_correct_stats() {
 
 	// Sync again - should show updates
 	let output = Command::new(sy_bin())
-		.args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap(), "--exclude-vcs"])
 		.output()
 		.unwrap();
 
@@ -306,7 +306,7 @@ fn test_large_file_update_with_delta_sync() {
 	drop(file);
 
 	// Sync again - should use delta sync
-	let output = Command::new(sy_bin()).args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
+	let output = Command::new(sy_bin()).args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
 
 	assert!(output.status.success());
 	let stdout = String::from_utf8_lossy(&output.stdout);
