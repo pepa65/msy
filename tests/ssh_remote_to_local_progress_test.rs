@@ -20,8 +20,8 @@ const FEDORA_HOST: &str = "fedora";
 const FEDORA_USER: &str = "nick";
 
 /// Helper to create SSH config for fedora
-fn create_fedora_config() -> sy::ssh::config::SshConfig {
-    use sy::ssh::config::SshConfig;
+fn create_fedora_config() -> msy::ssh::config::SshConfig {
+    use msy::ssh::config::SshConfig;
 
     let mut config = SshConfig::new(FEDORA_HOST);
     config.user = FEDORA_USER.to_string();
@@ -54,8 +54,8 @@ fn cleanup_remote_file(path: &str) {
 #[tokio::test]
 #[ignore]
 async fn test_remote_to_local_with_progress() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = format!("/tmp/sy_test_{}_2mb.dat", std::process::id());
     create_remote_file(&remote_source, 2);
@@ -112,8 +112,8 @@ async fn test_remote_to_local_with_progress() {
 #[tokio::test]
 #[ignore]
 async fn test_remote_to_local_large_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = format!("/tmp/sy_test_{}_10mb.dat", std::process::id());
     create_remote_file(&remote_source, 10);
@@ -157,8 +157,8 @@ async fn test_remote_to_local_large_file() {
 #[tokio::test]
 #[ignore]
 async fn test_remote_to_local_progress_monotonic() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = format!("/tmp/sy_test_{}_5mb.dat", std::process::id());
     create_remote_file(&remote_source, 5);
@@ -204,8 +204,8 @@ async fn test_remote_to_local_progress_monotonic() {
 #[tokio::test]
 #[ignore]
 async fn test_remote_to_local_connection_pool() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     // Create 2 remote files
     let remote1 = format!("/tmp/sy_test_{}_pool1.dat", std::process::id());

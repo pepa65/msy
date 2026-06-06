@@ -2,10 +2,10 @@ use clap::{Parser, Subcommand};
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::PathBuf;
-use sy::compress::{decompress, Compression};
-use sy::delta::{apply_delta, compute_checksums, Delta};
-use sy::sparse::DataRegion;
-use sy::sync::scanner::Scanner;
+use msy::compress::{decompress, Compression};
+use msy::delta::{apply_delta, compute_checksums, Delta};
+use msy::sparse::DataRegion;
+use msy::sync::scanner::Scanner;
 
 #[derive(Parser)]
 #[command(name = "sy-remote")]
@@ -170,7 +170,7 @@ fn main() -> anyhow::Result<()> {
             path,
             checksum_type,
         } => {
-            use sy::integrity::{ChecksumType, IntegrityVerifier};
+            use msy::integrity::{ChecksumType, IntegrityVerifier};
 
             let csum_type = match checksum_type.as_str() {
                 "fast" => ChecksumType::Fast,

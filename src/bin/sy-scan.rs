@@ -1,7 +1,7 @@
 use clap::Parser;
 use std::path::PathBuf;
 use std::time::Instant;
-use sy::sync::scanner::Scanner;
+use msy::sync::scanner::Scanner;
 
 #[derive(Parser, Debug)]
 #[command(name = "sy-scan")]

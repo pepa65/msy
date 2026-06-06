@@ -8,7 +8,7 @@ use std::path::PathBuf;
 
 /// Helper function that mirrors the logic from compute_destination_path in main.rs
 /// This duplication is intentional to document the expected behavior independently
-fn compute_test_destination(source: &sy::path::SyncPath, dest: &sy::path::SyncPath) -> PathBuf {
+fn compute_test_destination(source: &msy::path::SyncPath, dest: &msy::path::SyncPath) -> PathBuf {
     let source_path = source.path();
 
     // For directories with trailing slash, use destination as-is (copy contents)
@@ -28,39 +28,39 @@ fn compute_test_destination(source: &sy::path::SyncPath, dest: &sy::path::SyncPa
 #[test]
 fn test_syncpath_trailing_slash_detection() {
     // Test trailing slash detection for local paths
-    let path_without = sy::path::SyncPath::parse("/home/user/mydir");
+    let path_without = msy::path::SyncPath::parse("/home/user/mydir");
     assert!(
         !path_without.has_trailing_slash(),
         "/home/user/mydir should NOT have trailing slash"
     );
 
-    let path_with = sy::path::SyncPath::parse("/home/user/mydir/");
+    let path_with = msy::path::SyncPath::parse("/home/user/mydir/");
     assert!(
         path_with.has_trailing_slash(),
         "/home/user/mydir/ should have trailing slash"
     );
 
     // Test remote paths
-    let remote_without = sy::path::SyncPath::parse("user@host:/path/to/dir");
+    let remote_without = msy::path::SyncPath::parse("user@host:/path/to/dir");
     assert!(
         !remote_without.has_trailing_slash(),
         "user@host:/path/to/dir should NOT have trailing slash"
     );
 
-    let remote_with = sy::path::SyncPath::parse("user@host:/path/to/dir/");
+    let remote_with = msy::path::SyncPath::parse("user@host:/path/to/dir/");
     assert!(
         remote_with.has_trailing_slash(),
         "user@host:/path/to/dir/ should have trailing slash"
     );
 
     // Test Windows paths
-    let windows_without = sy::path::SyncPath::parse("C:\\Users\\name\\dir");
+    let windows_without = msy::path::SyncPath::parse("C:\\Users\\name\\dir");
     assert!(
         !windows_without.has_trailing_slash(),
         "C:\\Users\\name\\dir should NOT have trailing slash"
     );
 
-    let windows_with = sy::path::SyncPath::parse("C:\\Users\\name\\dir\\");
+    let windows_with = msy::path::SyncPath::parse("C:\\Users\\name\\dir\\");
     assert!(
         windows_with.has_trailing_slash(),
         "C:\\Users\\name\\dir\\ should have trailing slash"
@@ -73,8 +73,8 @@ fn test_destination_computation_without_trailing_slash() {
     // Dest: /target
     // Expected: /target/myproject (directory itself is copied)
 
-    let source = sy::path::SyncPath::parse("/a/myproject");
-    let dest = sy::path::SyncPath::parse("/target");
+    let source = msy::path::SyncPath::parse("/a/myproject");
+    let dest = msy::path::SyncPath::parse("/target");
 
     let effective_dest = compute_test_destination(&source, &dest);
     assert_eq!(effective_dest, PathBuf::from("/target/myproject"));
@@ -86,8 +86,8 @@ fn test_destination_computation_with_trailing_slash() {
     // Dest: /target
     // Expected: /target (contents only are copied)
 
-    let source = sy::path::SyncPath::parse("/a/myproject/");
-    let dest = sy::path::SyncPath::parse("/target");
+    let source = msy::path::SyncPath::parse("/a/myproject/");
+    let dest = msy::path::SyncPath::parse("/target");
 
     let effective_dest = compute_test_destination(&source, &dest);
     assert_eq!(effective_dest, PathBuf::from("/target"));
@@ -99,8 +99,8 @@ fn test_remote_destination_computation_without_trailing_slash() {
     // Dest: /target
     // Expected: /target/myproject
 
-    let source = sy::path::SyncPath::parse("user@host:/a/myproject");
-    let dest = sy::path::SyncPath::parse("/target");
+    let source = msy::path::SyncPath::parse("user@host:/a/myproject");
+    let dest = msy::path::SyncPath::parse("/target");
 
     assert!(!source.has_trailing_slash());
     let effective_dest = compute_test_destination(&source, &dest);
@@ -113,8 +113,8 @@ fn test_remote_destination_computation_with_trailing_slash() {
     // Dest: /target
     // Expected: /target
 
-    let source = sy::path::SyncPath::parse("user@host:/a/myproject/");
-    let dest = sy::path::SyncPath::parse("/target");
+    let source = msy::path::SyncPath::parse("user@host:/a/myproject/");
+    let dest = msy::path::SyncPath::parse("/target");
 
     assert!(source.has_trailing_slash());
     let effective_dest = compute_test_destination(&source, &dest);

@@ -512,7 +512,7 @@ fn test_cross_filesystem_uses_inplace_strategy() {
 fn test_same_filesystem_detection() {
     // Unit test for same_filesystem function using standard library metadata
 
-    use sy::fs_util::same_filesystem;
+    use msy::fs_util::same_filesystem;
 
     let temp = TempDir::new().unwrap();
     let file1 = temp.path().join("file1.txt");

@@ -1,10 +1,10 @@
 [package]
-name = "sy"
-version = "0.3.0"
-edition = "2021"
-authors = ["Nick Russo <nijaru7@gmail.com>"]
-description = "Modern rsync alternative - Fast, parallel file synchronization"
-repository = "https://github.com/nijaru/sy"
+name = "msy"
+version = "0.4.0"
+edition = "2024"
+authors = ["Nick Russo <nijaru7@gmail.com>", "<github.com/pepa65>"]
+description = "Modern musl rsync alternative - Fast, parallel file synchronization"
+repository = "https://github.com/pepa65/msy"
 license = "MIT"
 keywords = ["rsync", "sync", "file-transfer", "backup", "cli"]
 categories = ["command-line-utilities", "filesystem"]
@@ -81,7 +81,7 @@ num_cpus = "1.16"  # CPU count detection for parallel scanning
 fastbloom = "0.7"  # Bloom filters for efficient deletion checks
 
 # SSH (Phase 2) - Optional feature
-ssh2 = { version = "0.9", optional = true }
+ssh2 = { version = "0.9", optional = true, features = ["vendored-openssl"] }
 whoami = { version = "1", optional = true }
 dirs = "5"
 regex = { version = "1", optional = true }
@@ -150,3 +150,10 @@ path = "src/bin/sy-bench-gen.rs"
 [[bin]]
 name = "sy-scan"
 path = "src/bin/sy-scan.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

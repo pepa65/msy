@@ -1,5 +1,5 @@
 use std::fs;
-use sy::compress::{compress, decompress, should_compress_adaptive, Compression};
+use msy::compress::{compress, decompress, should_compress_adaptive, Compression};
 use tempfile::TempDir;
 
 #[test]

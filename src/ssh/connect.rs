@@ -58,9 +58,9 @@ pub async fn connect(config: &SshConfig) -> Result<Session> {
         // 3. Default keys
 
         // Try SSH agent first
-        if let Ok(mut agent) = session.agent() {
-            if agent.connect().is_ok() && agent.list_identities().is_ok() {
-                if let Ok(identities) = agent.identities() {
+        if let Ok(mut agent) = session.agent()
+            && agent.connect().is_ok() && agent.list_identities().is_ok()
+                && let Ok(identities) = agent.identities() {
                     for identity in identities {
                         if agent.userauth(&username, &identity).is_ok() {
                             tracing::debug!("Authenticated using SSH agent");
@@ -68,8 +68,6 @@ pub async fn connect(config: &SshConfig) -> Result<Session> {
                         }
                     }
                 }
-            }
-        }
 
         // Try each identity file
         for identity_file in &identity_files {
@@ -83,8 +81,8 @@ pub async fn connect(config: &SshConfig) -> Result<Session> {
         }
 
         // Try default keys if no identity files specified
-        if identity_files.is_empty() {
-            if let Some(home) = dirs::home_dir() {
+        if identity_files.is_empty()
+            && let Some(home) = dirs::home_dir() {
                 let default_keys = [
                     home.join(".ssh/id_rsa"),
                     home.join(".ssh/id_ed25519"),
@@ -102,7 +100,6 @@ pub async fn connect(config: &SshConfig) -> Result<Session> {
                     }
                 }
             }
-        }
 
         Err(SyncError::Io(std::io::Error::new(
             ErrorKind::PermissionDenied,

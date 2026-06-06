@@ -88,11 +88,10 @@ fn read_xattrs(path: &Path) -> Option<HashMap<String, Vec<u8>>> {
     };
 
     for name in names {
-        if let Ok(Some(value)) = xattr::get(path, &name) {
-            if let Some(name_str) = name.to_str() {
+        if let Ok(Some(value)) = xattr::get(path, &name)
+            && let Some(name_str) = name.to_str() {
                 xattrs.insert(name_str.to_string(), value);
             }
-        }
     }
 
     if xattrs.is_empty() {

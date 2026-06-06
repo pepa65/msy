@@ -208,10 +208,10 @@ impl TransferState {
 
             if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("json") {
                 // Check file modification time
-                if let Ok(metadata) = fs::metadata(&path) {
-                    if let Ok(modified) = metadata.modified() {
-                        if let Ok(age) = now.duration_since(modified) {
-                            if age > max_age {
+                if let Ok(metadata) = fs::metadata(&path)
+                    && let Ok(modified) = metadata.modified()
+                        && let Ok(age) = now.duration_since(modified)
+                            && age > max_age {
                                 // State file is older than max_age, remove it
                                 if fs::remove_file(&path).is_ok() {
                                     cleared_count += 1;
@@ -222,9 +222,6 @@ impl TransferState {
                                     );
                                 }
                             }
-                        }
-                    }
-                }
             }
         }
 

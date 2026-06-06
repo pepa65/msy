@@ -108,14 +108,12 @@ impl Generator {
             let mode = if entry.is_dir { 0o755 } else { 0o644 };
 
             // Skip unchanged files (matching size and mtime)
-            if !entry.is_dir && !entry.is_symlink {
-                if let Some(ref dest) = dest_state {
-                    if dest.size == entry.size && dest.mtime == mtime {
+            if !entry.is_dir && !entry.is_symlink
+                && let Some(ref dest) = dest_state
+                    && dest.size == entry.size && dest.mtime == mtime {
                         // File unchanged, skip it
                         continue;
                     }
-                }
-            }
 
             let msg = if entry.is_dir {
                 GeneratorMessage::Mkdir {
@@ -208,11 +206,10 @@ impl Generator {
             return (false, None);
         }
 
-        if let Some(state) = dest_state {
-            if let Some(ref delta_info) = state.delta_info {
+        if let Some(state) = dest_state
+            && let Some(ref delta_info) = state.delta_info {
                 return (true, Some(delta_info.clone()));
             }
-        }
 
         (false, None)
     }
@@ -235,10 +232,10 @@ mod tests {
         };
 
         let (tx, mut rx) = crate::streaming::channel::file_job_channel();
-        let gen = Generator::new(config);
+        let genr = Generator::new(config);
 
         tokio::spawn(async move {
-            gen.run(tx).await.unwrap();
+            genr.run(tx).await.unwrap();
         });
 
         // Should receive FileEnd with 0 files
@@ -265,10 +262,10 @@ mod tests {
         };
 
         let (tx, mut rx) = crate::streaming::channel::file_job_channel();
-        let gen = Generator::new(config);
+        let genr = Generator::new(config);
 
         tokio::spawn(async move {
-            gen.run(tx).await.unwrap();
+            genr.run(tx).await.unwrap();
         });
 
         let mut file_count = 0;
@@ -303,10 +300,10 @@ mod tests {
         };
 
         let (tx, mut rx) = crate::streaming::channel::file_job_channel();
-        let mut gen = Generator::new(config);
+        let mut genr = Generator::new(config);
 
         // Simulate dest has extra file
-        gen.add_dest_entry(DestFileEntry {
+        genr.add_dest_entry(DestFileEntry {
             path: "delete_me.txt".to_string(),
             size: 100,
             mtime: 0,
@@ -317,7 +314,7 @@ mod tests {
         });
 
         tokio::spawn(async move {
-            gen.run(tx).await.unwrap();
+            genr.run(tx).await.unwrap();
         });
 
         let mut got_delete = false;

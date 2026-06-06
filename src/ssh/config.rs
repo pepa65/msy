@@ -122,11 +122,10 @@ pub fn parse_ssh_config_from_str(host: &str, content: &str) -> Result<SshConfig>
                 }
             }
             "port" => {
-                if let Some(value) = parts.get(1) {
-                    if let Ok(port) = value.parse::<u16>() {
+                if let Some(value) = parts.get(1)
+                    && let Ok(port) = value.parse::<u16>() {
                         config.port = port;
                     }
-                }
             }
             "user" => {
                 if let Some(value) = parts.get(1) {

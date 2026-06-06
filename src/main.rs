@@ -104,7 +104,7 @@ async fn main() -> Result<()> {
 
     // Server mode (internal use)
     if cli.server {
-        return sy::server::run_server().await;
+        return msy::server::run_server().await;
     }
 
     // Merge profile with CLI args if --profile is set
@@ -114,16 +114,14 @@ async fn main() -> Result<()> {
             .ok_or_else(|| anyhow::anyhow!("Profile '{}' not found", profile_name))?;
 
         // Apply profile settings (CLI args take precedence)
-        if cli.source.is_none() {
-            if let Some(ref source_str) = profile.source {
+        if cli.source.is_none()
+            && let Some(ref source_str) = profile.source {
                 cli.source = Some(SyncPath::parse(source_str));
             }
-        }
-        if cli.destination.is_none() {
-            if let Some(ref dest_str) = profile.destination {
+        if cli.destination.is_none()
+            && let Some(ref dest_str) = profile.destination {
                 cli.destination = Some(SyncPath::parse(dest_str));
             }
-        }
 
         // Merge other profile settings
         if profile.delete.is_some() && !cli.delete {
@@ -135,29 +133,25 @@ async fn main() -> Result<()> {
         if profile.quiet.is_some() && !cli.quiet {
             cli.quiet = profile.quiet.unwrap_or(false);
         }
-        if let Some(verbose) = profile.verbose {
-            if cli.verbose == 0 {
+        if let Some(verbose) = profile.verbose
+            && cli.verbose == 0 {
                 cli.verbose = verbose;
             }
-        }
-        if let Some(parallel) = profile.parallel {
-            if cli.parallel == 10 {
+        if let Some(parallel) = profile.parallel
+            && cli.parallel == 10 {
                 // Default value
                 cli.parallel = parallel;
             }
-        }
-        if let Some(ref bwlimit_str) = profile.bwlimit {
-            if cli.bwlimit.is_none() {
+        if let Some(ref bwlimit_str) = profile.bwlimit
+            && cli.bwlimit.is_none() {
                 cli.bwlimit = Some(cli::parse_size(bwlimit_str).map_err(|e| {
                     anyhow::anyhow!("Invalid bwlimit in profile '{}': {}", profile_name, e)
                 })?);
             }
-        }
-        if let Some(ref excludes) = profile.exclude {
-            if cli.exclude.is_empty() {
+        if let Some(ref excludes) = profile.exclude
+            && cli.exclude.is_empty() {
                 cli.exclude = excludes.clone();
             }
-        }
         if let Some(resume) = profile.resume {
             // Profile sets resume=false means --no-resume
             if !resume {
@@ -223,7 +217,7 @@ async fn main() -> Result<()> {
 
     // Print header (skip if JSON mode)
     if !cli.quiet && !cli.json {
-        println!("sy v{}", env!("CARGO_PKG_VERSION"));
+        print!("sy v{} ", env!("CARGO_PKG_VERSION"));
         println!("Syncing {} → {}", source, destination);
 
         if cli.dry_run {
@@ -477,7 +471,7 @@ Or install from local source with: cargo install --path . --features acl"#
 
         // JSON output
         if cli.json {
-            use sy::sync::output::{SyncEvent, VerificationError};
+            use msy::sync::output::{SyncEvent, VerificationError};
 
             let errors_json: Vec<VerificationError> = result
                 .errors
@@ -579,7 +573,7 @@ Or install from local source with: cargo install --path . --features acl"#
     let stats = if cli.bidirectional {
         // ... existing bisync logic ...
         // Bidirectional sync mode
-        if !cli.quiet && !cli.json {
+        if !cli.quiet && !cli.json && cli.verbose > 0 {
             println!("sy v{}", env!("CARGO_PKG_VERSION"));
             println!("Mode: Bidirectional sync");
             println!("Strategy: {}", cli.conflict_resolve);
@@ -749,18 +743,18 @@ Or install from local source with: cargo install --path . --features acl"#
         }
     } else if source.is_local() && destination.is_remote() {
         // Use server mode for local → remote SSH (faster than SFTP)
-        if !cli.quiet && !cli.json {
+        if !cli.quiet && !cli.json && cli.verbose > 0 {
             println!("Mode: Server protocol (push)\n");
         }
         sync::server_mode::sync_push(source.path(), destination, cli.delete, cli.compress).await?
     } else if source.is_remote() && destination.is_local() {
         // Use server mode for remote → local SSH (faster than SFTP)
-        if !cli.quiet && !cli.json {
+        if !cli.quiet && !cli.json && cli.verbose > 0 {
             println!("Mode: Server protocol (pull)\n");
         }
         sync::server_mode::sync_pull(source, destination.path(), cli.delete, cli.compress).await?
     } else if cli.is_single_file() {
-        if !cli.quiet && !cli.json {
+        if !cli.quiet && !cli.json && cli.verbose > 0 {
             println!("Mode: Single file sync\n");
         }
         // For single files, trailing slash doesn't apply - use destination as-is
@@ -772,7 +766,7 @@ Or install from local source with: cargo install --path . --features acl"#
         let effective_dest = compute_destination_path(source, destination);
 
         if cli.stream {
-            if !cli.quiet && !cli.json {
+            if !cli.quiet && !cli.json && cli.verbose > 0 {
                 println!("Mode: Streaming sync (experimental)\n");
             }
             engine
@@ -811,16 +805,20 @@ Or install from local source with: cargo install --path . --features acl"#
                 "\n{}\n",
                 "✓ Dry-run complete (no changes made)".green().bold()
             );
-        } else {
+        } else if cli.verbose > 0 {
             println!("\n{}\n", "✓ Sync complete".green().bold());
+            println!(
+                "  Files scanned:     {}",
+                stats.files_scanned.to_string().blue()
+            );
         }
 
         // File operations
-        println!(
-            "  Files scanned:     {}",
-            stats.files_scanned.to_string().blue()
-        );
         if cli.dry_run {
+            println!(
+                "  Files scanned:     {}",
+                stats.files_scanned.to_string().blue()
+            );
             println!(
                 "  Would create:      {}",
                 stats.files_created.to_string().yellow()
@@ -865,7 +863,11 @@ Or install from local source with: cargo install --path . --features acl"#
                     );
                 }
             }
-        } else {
+        } else if cli.verbose > 0 {
+            println!(
+                "  Files scanned:     {}",
+                stats.files_scanned.to_string().blue()
+            );
             if stats.files_created > 0 {
                 println!(
                     "  Files created:     {}",
@@ -882,7 +884,7 @@ Or install from local source with: cargo install --path . --features acl"#
                     "  Files updated:     {}",
                     stats.files_updated.to_string().yellow()
                 );
-            } else {
+             } else {
                 println!(
                     "  Files updated:     {}",
                     stats.files_updated.to_string().bright_black()
@@ -903,38 +905,57 @@ Or install from local source with: cargo install --path . --features acl"#
                     stats.files_deleted.to_string().bright_black()
                 );
             }
+            println!();
+        } else {
+            println!(
+                "Files scanned/created/updated/skipped/deleted: {} {} {} {} {}",
+                stats.files_scanned,
+                stats.files_created,
+                stats.files_updated,
+                stats.files_skipped,
+                stats.files_deleted,
+            )
         }
 
         // Transfer stats
-        println!();
-        println!(
-            "  Bytes transferred: {}",
-            format_bytes(stats.bytes_transferred).cyan()
-        );
-
-        // Calculate and display transfer rate
         let duration_secs = stats.duration.as_secs_f64();
-        if duration_secs > 0.0 && stats.bytes_transferred > 0 {
-            let bytes_per_sec = stats.bytes_transferred as f64 / duration_secs;
+        let bytes_per_sec = if duration_secs > 0.0 {
+            stats.bytes_transferred as f64 / duration_secs
+        } else {
+            0.0
+        };
+        if cli.verbose > 0 {
             println!(
-                "  Transfer rate:     {}",
-                format!("{}/s", format_bytes(bytes_per_sec as u64)).cyan()
+                "  Bytes transferred: {}",
+                format_bytes(stats.bytes_transferred).cyan()
             );
-        }
-
-        println!(
-            "  Duration:          {}",
-            format_duration(stats.duration).cyan()
-        );
-
-        // Delta sync stats (if used)
-        if stats.files_delta_synced > 0 {
-            println!();
+            // Calculate and display transfer rate
+            if duration_secs > 0.0 {
+                println!(
+                    "  Transfer rate:     {}",
+                    format!("{}/s", format_bytes(bytes_per_sec as u64)).cyan(),
+                );
+            }
             println!(
-                "  {}        {} files, {} saved",
-                "Delta sync:".bright_magenta(),
-                stats.files_delta_synced.to_string().bright_magenta(),
-                format_bytes(stats.delta_bytes_saved).bright_magenta()
+                "  Duration:          {}",
+                format_duration(stats.duration).cyan(),
+            );
+            // Delta sync stats (if used)
+            if stats.files_delta_synced > 0 {
+                println!();
+                println!(
+                    "  {}        {} files, {} saved",
+                    "Delta sync:".bright_magenta(),
+                    stats.files_delta_synced.to_string().bright_magenta(),
+                    format_bytes(stats.delta_bytes_saved).bright_magenta(),
+                );
+            };
+        } else {
+            println!(
+                "Bytes transferred / duration / rate: {}  {}  {}/s",
+                format_bytes(stats.bytes_transferred),
+                format_duration(stats.duration),
+                format_bytes(bytes_per_sec as u64),
             );
         }
 
@@ -969,11 +990,10 @@ Or install from local source with: cargo install --path . --features acl"#
         }
 
         // Print performance summary if --perf is enabled
-        if cli.perf {
-            if let Some(metrics) = engine.get_performance_metrics() {
+        if cli.perf
+            && let Some(metrics) = engine.get_performance_metrics() {
                 metrics.print_summary();
             }
-        }
     }
 
     Ok(())
@@ -989,13 +1009,13 @@ fn format_duration(duration: std::time::Duration) -> String {
         if mins >= 60 {
             let hours = mins / 60;
             let mins = mins % 60;
-            format!("{}h {}m {}s", hours, mins, secs)
+            format!("{} h  {} m  {} s", hours, mins, secs)
         } else {
-            format!("{}m {}s", mins, secs)
+            format!("{} m  {} s", mins, secs)
         }
     } else if secs > 0 {
-        format!("{}.{:03}s", secs, millis)
+        format!("{}.{:03} s", secs, millis)
     } else {
-        format!("{}ms", millis)
+        format!("{} ms", millis)
     }
 }

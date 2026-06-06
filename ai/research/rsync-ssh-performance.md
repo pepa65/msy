@@ -95,13 +95,13 @@ No round-trips. Each stage just streams.
 
 ## Options to Beat rsync
 
-| Option | Description | Impact | Effort | Breaks Protocol |
-|--------|-------------|--------|--------|-----------------|
-| A | Adopt rsync streaming model | High | Very High | Yes |
-| B | Deeper pipelining (8→100+) | Medium | Low | No |
-| C | Daemon mode (PR #13) | High (repeated) | Medium | No |
-| D | Incremental recursion | High | High | Partial |
-| E | Hybrid (B+C+D) | High | High | Partial |
+| Option | Description                   | Impact          | Effort    | Breaks Protocol |
+|--------|-------------------------------|-----------------|-----------|-----------------|
+| A      | Adopt rsync streaming model   | High            | Very High | Yes             |
+| B      | Deeper pipelining (8→100+)    | Medium          | Low       | No              |
+| C      | Daemon mode (PR #13)          | High (repeated) | Medium    | No              |
+| D      | Incremental recursion         | High            | High      | Partial         |
+| E      | Hybrid (B+C+D)                | High            | High      | Partial         |
 
 ### Option A: Full Streaming Model
 

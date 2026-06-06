@@ -7,10 +7,10 @@
 
 ### Results
 
-| Operation | fjall | rusqlite | Ratio |
-|-----------|-------|----------|-------|
+| Operation          | fjall     | rusqlite  | Ratio                          |
+|--------------------|-----------|-----------|--------------------------------|
 | Write 1K checksums | 340.17 ms | 533.54 ms | 0.637x (rusqlite 56.8% slower) |
-| Read 1K checksums | 256.66 ms | 5.75 ms | 44.6x (rusqlite faster) |
+| Read 1K checksums  | 256.66 ms | 5.75 ms   | 44.6x (rusqlite faster)        |
 
 ### Analysis
 
@@ -38,10 +38,10 @@ Keep fjall for checksumdb. The write performance advantage is real and measurabl
 
 ### Results
 
-| Operation | fjall | seerdb | Speedup |
-|-----------|-------|--------|---------|
-| Write 1K | 328-342 ms | 18.0-18.4 ms | 18.2x |
-| Read 1K | 256-258 ms | 6.3-8.5 ms | 30-43x |
+| Operation | fjall      | seerdb       | Speedup |
+|-----------|------------|--------------|---------|
+| Write 1K  | 328-342 ms | 18.0-18.4 ms | 18.2x   |
+| Read 1K   | 256-258 ms | 6.3-8.5 ms   | 30-43x  |
 
 ### Why seerdb is so much faster
 
@@ -109,12 +109,12 @@ If sy ever supports multi-TB syncs with millions of files:
 
 ### Analysis
 
-| Aspect | russh (pure Rust) | ssh2-rs (sys binding) |
-|--------|-------------------|----------------------|
-| Pure Rust | ✅ Yes | ❌ No (OpenSSH binding) |
-| SSH agent auth | ❌ Blocker: needs custom protocol | ✅ Full support |
-| Performance | Unknown (newer code) | ✅ Proven (mature) |
-| Maintenance | Moderate | ✅ OpenSSL project |
+| Aspect         | russh (pure Rust)                 | ssh2-rs (sys binding)   |
+|----------------|-----------------------------------|-------------------------|
+| Pure Rust      | ✅ Yes                            | ❌ No (OpenSSH binding) |
+| SSH agent auth | ❌ Blocker: needs custom protocol | ✅ Full support         |
+| Performance    | Unknown (newer code)              | ✅ Proven (mature)      |
+| Maintenance    | Moderate                          | ✅ OpenSSL project      |
 
 ### SSH Agent Blocker
 
@@ -136,11 +136,11 @@ Use ssh2-rs (sys binding to OpenSSL). Performance and compatibility are proven. 
 
 ## Decision Summary
 
-| Database | Decision | Reason |
-|----------|----------|--------|
-| **fjall** | KEEP | 56% faster than SQLite on writes, production-ready, stable |
-| **seerdb** | REJECT | Nightly-only, experimental, workload mismatch |
-| **russh** | REJECT | SSH agent auth blocker, pure Rust not worth architectural compromise |
-| **object_store** | KEEP (optional) | Multi-cloud support, cleaner than vendor-specific APIs |
+| Database         | Decision        | Reason                                                               |
+|------------------|-----------------|----------------------------------------------------------------------|
+| **fjall**        | KEEP            | 56% faster than SQLite on writes, production-ready, stable           |
+| **seerdb**       | REJECT          | Nightly-only, experimental, workload mismatch                        |
+| **russh**        | REJECT          | SSH agent auth blocker, pure Rust not worth architectural compromise |
+| **object_store** | KEEP (optional) | Multi-cloud support, cleaner than vendor-specific APIs               |
 
 All evaluations judge on **performance, functionality, and production viability**—not ideology.

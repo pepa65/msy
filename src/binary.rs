@@ -5,15 +5,14 @@ use std::path::PathBuf;
 /// Find the sy-remote binary in common locations
 pub fn find_sy_remote_binary() -> io::Result<PathBuf> {
     // 1. Try relative to current executable (cargo install)
-    if let Ok(exe_path) = std::env::current_exe() {
-        if let Some(parent) = exe_path.parent() {
+    if let Ok(exe_path) = std::env::current_exe()
+        && let Some(parent) = exe_path.parent() {
             let candidate = parent.join("sy-remote");
             if candidate.exists() {
                 tracing::debug!("Found sy-remote at: {}", candidate.display());
                 return Ok(candidate);
             }
         }
-    }
 
     // 2. Try ./target/release (development)
     let target_release = PathBuf::from("target/release/sy-remote");

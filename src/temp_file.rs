@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 /// # Example
 ///
 /// ```rust,no_run
-/// use sy::temp_file::TempFileGuard;
+/// use msy::temp_file::TempFileGuard;
 /// use std::path::Path;
 ///
 /// let temp_path = Path::new("/tmp/file.sy.tmp");

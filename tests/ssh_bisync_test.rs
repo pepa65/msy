@@ -24,8 +24,8 @@ use tempfile::TempDir;
 const FEDORA_HOST: &str = "fedora";
 const FEDORA_USER: &str = "nick";
 
-fn create_fedora_config() -> sy::ssh::config::SshConfig {
-    use sy::ssh::config::SshConfig;
+fn create_fedora_config() -> msy::ssh::config::SshConfig {
+    use msy::ssh::config::SshConfig;
     let mut config = SshConfig::new(FEDORA_HOST);
     config.user = FEDORA_USER.to_string();
     config.port = 22;
@@ -95,9 +95,9 @@ fn create_remote_file(remote_path: &str, content: &[u8]) {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_initial_local_to_remote() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("initial_l2r");
@@ -153,9 +153,9 @@ async fn test_bisync_initial_local_to_remote() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_initial_remote_to_local() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("initial_r2l");
@@ -214,9 +214,9 @@ async fn test_bisync_initial_remote_to_local() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_add_file_to_local() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("add_local");
@@ -289,9 +289,9 @@ async fn test_bisync_add_file_to_local() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_add_file_to_remote() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("add_remote");
@@ -363,9 +363,9 @@ async fn test_bisync_add_file_to_remote() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_delete_from_local() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("delete_local");
@@ -453,9 +453,9 @@ async fn test_bisync_delete_from_local() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_conflict_newer_wins() {
-    use sy::bisync::{BisyncEngine, BisyncOptions, ConflictResolution};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions, ConflictResolution};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("conflict_newer");
@@ -534,9 +534,9 @@ async fn test_bisync_conflict_newer_wins() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_conflict_larger_wins() {
-    use sy::bisync::{BisyncEngine, BisyncOptions, ConflictResolution};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions, ConflictResolution};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("conflict_larger");
@@ -617,9 +617,9 @@ async fn test_bisync_conflict_larger_wins() {
 #[tokio::test]
 #[ignore]
 async fn test_bisync_max_delete_limit() {
-    use sy::bisync::{BisyncEngine, BisyncOptions};
-    use sy::transport::local::LocalTransport;
-    use sy::transport::ssh::SshTransport;
+    use msy::bisync::{BisyncEngine, BisyncOptions};
+    use msy::transport::local::LocalTransport;
+    use msy::transport::ssh::SshTransport;
 
     let local_dir = TempDir::new().unwrap();
     let remote_dir = create_remote_test_path("max_delete");

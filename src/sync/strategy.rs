@@ -144,14 +144,14 @@ impl StrategyPlanner {
                     }
 
                     // Compute checksums if verifier is present and files are local
-                    let (source_cksum, dest_cksum) = if let Some(ref verifier) = self.verifier {
+                    let (source_cksum, dest_cksum) = if let Some(verifier) = &self.verifier {
                         self.compute_checksums_local(source, &dest_path, verifier, checksum_db)?
                     } else {
                         (None, None)
                     };
 
                     // If checksums are available and match, skip transfer
-                    let action = if let (Some(ref src_cksum), Some(ref dst_cksum)) =
+                    let action = if let (Some(src_cksum), Some(dst_cksum)) =
                         (&source_cksum, &dest_cksum)
                     {
                         if src_cksum == dst_cksum {
@@ -331,7 +331,7 @@ impl StrategyPlanner {
             match std::fs::metadata(&dest_path) {
                 Ok(dest_meta) => {
                     // Compute checksums if verifier is present
-                    let (source_cksum, dest_cksum) = if let Some(ref verifier) = self.verifier {
+                    let (source_cksum, dest_cksum) = if let Some(verifier) = &self.verifier {
                         self.compute_checksums_local(source, &dest_path, verifier, None)
                             .unwrap_or((None, None))
                     } else {
@@ -339,7 +339,7 @@ impl StrategyPlanner {
                     };
 
                     // If checksums are available and match, skip transfer
-                    let action = if let (Some(ref src_cksum), Some(ref dst_cksum)) =
+                    let action = if let (Some(src_cksum), Some(dst_cksum)) =
                         (&source_cksum, &dest_cksum)
                     {
                         if src_cksum == dst_cksum {

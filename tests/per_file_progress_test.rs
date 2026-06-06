@@ -17,8 +17,8 @@ async fn test_progress_shown_for_large_files() {
     fs::write(&large_file, &data).unwrap();
 
     // Sync with progress enabled
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -62,8 +62,8 @@ async fn test_progress_not_shown_for_small_files() {
     let data = vec![0x42u8; 512 * 1024]; // 512KB
     fs::write(&small_file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
     let dest_file = dest.path().join("small.txt");
@@ -88,8 +88,8 @@ async fn test_progress_with_multiple_large_files() {
         fs::write(&file_path, &data).unwrap();
     }
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -140,8 +140,8 @@ async fn test_progress_with_mixed_file_sizes() {
     fs::write(&large1, vec![0x42u8; 5 * 1024 * 1024]).unwrap(); // 5MB
     fs::write(&large2, vec![0x42u8; 3 * 1024 * 1024]).unwrap(); // 3MB
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -194,8 +194,8 @@ async fn test_progress_with_very_large_file() {
     file.flush().unwrap();
     drop(file);
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -246,8 +246,8 @@ async fn test_progress_callback_error_handling() {
     let file = source.path().join("test.dat");
     fs::write(&file, vec![0x42u8; 2 * 1024 * 1024]).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -285,8 +285,8 @@ async fn test_streaming_with_nested_directories() {
     let large_file = nested_dir.join("deep_file.dat");
     fs::write(&large_file, vec![0x42u8; 2 * 1024 * 1024]).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -330,8 +330,8 @@ async fn test_progress_maintains_file_integrity() {
     }
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 

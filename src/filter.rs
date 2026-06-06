@@ -74,11 +74,10 @@ impl FilterRule {
                     }
                     // Check if path is inside a matching directory
                     for ancestor in path.ancestors().skip(1) {
-                        if let Some(ancestor_str) = ancestor.to_str() {
-                            if !ancestor_str.is_empty() && self.pattern.matches(ancestor_str) {
+                        if let Some(ancestor_str) = ancestor.to_str()
+                            && !ancestor_str.is_empty() && self.pattern.matches(ancestor_str) {
                                 return true;
                             }
-                        }
                     }
                 }
                 false
@@ -110,11 +109,9 @@ impl FilterRule {
                     for ancestor in path.ancestors().skip(1) {
                         if let Some(ancestor_basename) =
                             ancestor.file_name().and_then(|n| n.to_str())
-                        {
-                            if self.pattern.matches(ancestor_basename) {
+                            && self.pattern.matches(ancestor_basename) {
                                 return true;
                             }
-                        }
                     }
                     false
                 }

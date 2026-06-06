@@ -7,9 +7,9 @@ use async_trait::async_trait;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::SystemTime;
-use sy::error::Result;
-use sy::sync::scanner::FileEntry;
-use sy::transport::{TransferResult, Transport};
+use msy::error::Result;
+use msy::sync::scanner::FileEntry;
+use msy::transport::{TransferResult, Transport};
 use tempfile::TempDir;
 
 /// Mock remote transport that simulates a remote directory structure
@@ -86,7 +86,7 @@ impl Transport for MockRemoteTransport {
     }
 
     async fn metadata(&self, _path: &std::path::Path) -> Result<std::fs::Metadata> {
-        Err(sy::error::SyncError::Io(std::io::Error::other(
+        Err(msy::error::SyncError::Io(std::io::Error::other(
             "metadata() not implemented in MockRemoteTransport test fixture",
         )))
     }
@@ -101,7 +101,7 @@ impl Transport for MockRemoteTransport {
         _source: &std::path::Path,
         _dest: &std::path::Path,
     ) -> Result<TransferResult> {
-        Err(sy::error::SyncError::Io(std::io::Error::other(
+        Err(msy::error::SyncError::Io(std::io::Error::other(
             "copy_file() not implemented in MockRemoteTransport - DualTransport should use read_file/write_file instead",
         )))
     }
@@ -145,8 +145,8 @@ async fn test_remote_to_local_creates_parent_dirs() {
 
     // Create dual transport (mock remote + local)
     let source_transport = Box::new(MockRemoteTransport::new_with_nested_structure());
-    let dest_transport = Box::new(sy::transport::local::LocalTransport::new());
-    let dual_transport = sy::transport::dual::DualTransport::new(source_transport, dest_transport);
+    let dest_transport = Box::new(msy::transport::local::LocalTransport::new());
+    let dual_transport = msy::transport::dual::DualTransport::new(source_transport, dest_transport);
 
     // Create destination root
     dual_transport.create_dir_all(&dest_root).await.unwrap();

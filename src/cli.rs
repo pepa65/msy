@@ -478,15 +478,14 @@ pub struct Cli {
 impl Cli {
     pub fn validate(&self) -> anyhow::Result<()> {
         // Validate size filters first (independent of source path)
-        if let (Some(min), Some(max)) = (self.min_size, self.max_size) {
-            if min > max {
+        if let (Some(min), Some(max)) = (self.min_size, self.max_size)
+            && min > max {
                 anyhow::bail!(
                     "--min-size ({}) cannot be greater than --max-size ({})",
                     min,
                     max
                 );
             }
-        }
 
         // Validate comparison flags (mutually exclusive)
         let comparison_flags = [self.ignore_times, self.size_only, self.checksum];
@@ -568,14 +567,13 @@ impl Cli {
         }
 
         // Only validate local source paths (remote paths are validated during connection)
-        if let Some(source) = &self.source {
-            if source.is_local() {
+        if let Some(source) = &self.source
+            && source.is_local() {
                 let path = source.path();
                 if !path.exists() {
                     anyhow::bail!("Source path does not exist: {}", source);
                 }
             }
-        }
 
         Ok(())
     }

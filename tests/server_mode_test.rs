@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use std::fs;
-    use sy::path::SyncPath;
-    use sy::sync::server_mode::{sync_pull, sync_push};
+    use msy::path::SyncPath;
+    use msy::sync::server_mode::{sync_pull, sync_push};
     use tempfile::TempDir;
 
     #[tokio::test]

@@ -58,13 +58,13 @@ For delta sync to work without round-trips during transfer, the sender needs des
 
 ```
 CLIENT (local)                    SERVER (remote)
-     |                                 |
+     |                                |
      |-------- HELLO (push) --------->|
-     |                                 | [scan dest]
+     |                                | [scan dest]
      |<------- DEST_FILE_ENTRY -------|  (path, size, mtime, checksums)
      |<------- DEST_FILE_ENTRY -------|
      |<------- DEST_FILE_END ---------|
-     |                                 |
+     |                                |
      | [Generator has full dest state]|
      | [Streaming phase begins]       |
 ```
@@ -73,13 +73,13 @@ CLIENT (local)                    SERVER (remote)
 
 ```
 CLIENT (local)                    SERVER (remote)
-     |                                 |
+     |                                |
      |-------- HELLO (pull) --------->|
      | [scan local dest]              |
      |------- DEST_FILE_ENTRY ------->|  (checksums for delta)
      |------- DEST_FILE_END --------->|
-     |                                 | [Generator has dest state]
-     |                                 | [Streaming phase begins]
+     |                                | [Generator has dest state]
+     |                                | [Streaming phase begins]
 ```
 
 **Key point:** The initial exchange front-loads all destination metadata including block checksums for delta candidates. After this exchange completes, the streaming phase runs without any round-trips.
@@ -149,12 +149,12 @@ root_path: destination path (push) or source path (pull)
 #### FILE_ENTRY (0x02)
 
 ```
-+-------------+----------+-----------+---------+-----------+----------+
++-------------+----------+-----------+----------+-----------+----------+
 | path: str   | size: u64| mtime: i64| mode: u32| inode: u64| flags: u8|
-+-------------+----------+-----------+---------+-----------+----------+
-| [symlink_target: str if FLAG_SYMLINK]                               |
-| [link_target: str if FLAG_HARDLINK]                                 |
-+---------------------------------------------------------------------+
++-------------+----------+-----------+----------+-----------+----------+
+| [symlink_target: str if FLAG_SYMLINK]                                |
+| [link_target: str if FLAG_HARDLINK]                                  |
++----------------------------------------------------------------------+
 
 flags:
   bit 0: FLAG_DIR
@@ -171,9 +171,9 @@ Generator streams these continuously as scanning proceeds. No batching, no ACK.
 #### FILE_END (0x03)
 
 ```
-+----------------+----------------+
-| total_files: u64 | total_bytes: u64 |
-+----------------+----------------+
++-----------------+-----------------+
+| total_files: u64| total_bytes: u64|
++-----------------+-----------------+
 ```
 
 Signals end of source file list. Sender knows no more files coming.
@@ -183,11 +183,11 @@ Signals end of source file list. Sender knows no more files coming.
 Sent by Receiver during initial exchange. Includes block checksums for delta computation.
 
 ```
-+-------------+----------+-----------+---------+----------+
++-------------+----------+-----------+----------+----------+
 | path: str   | size: u64| mtime: i64| mode: u32| flags: u8|
-+-------------+----------+-----------+---------+----------+
-| [checksums if FLAG_HAS_CHECKSUMS]                       |
-+---------------------------------------------------------+
++-------------+----------+-----------+----------+----------+
+| [checksums if FLAG_HAS_CHECKSUMS]                        |
++----------------------------------------------------------+
 
 flags:
   bit 0: FLAG_DIR
@@ -199,9 +199,9 @@ checksums (if FLAG_HAS_CHECKSUMS):
 +---------------+-------------+-------------------+
 
 checksum entry (20 bytes each):
-+-------------+----------+----------+-------------+
-| offset: u64 | weak: u32| strong: u64            |
-+-------------+----------+----------+-------------+
++-------------+----------+------------+
+| offset: u64 | weak: u32| strong: u64|
++-------------+----------+------------+
 ```
 
 Server computes checksums for files that are delta candidates (exist on dest, size > DELTA_MIN_SIZE). Generator uses these to determine which files need delta vs full transfer.
@@ -209,9 +209,9 @@ Server computes checksums for files that are delta candidates (exist on dest, si
 #### DEST_FILE_END (0x05)
 
 ```
-+----------------+----------------+
-| total_files: u64 | total_bytes: u64 |
-+----------------+----------------+
++-----------------+-----------------+
+| total_files: u64| total_bytes: u64|
++-----------------+-----------------+
 ```
 
 Signals end of dest file list. Initial exchange complete, streaming phase begins.
@@ -219,9 +219,9 @@ Signals end of dest file list. Initial exchange complete, streaming phase begins
 #### DATA (0x06)
 
 ```
-+------------+----------+----------+--------------+
-| path: str  | offset: u64| flags: u8| data: bytes |
-+------------+----------+----------+--------------+
++----------+------------+----------+------------+
+| path: str| offset: u64| flags: u8| data: bytes|
++----------+------------+----------+------------+
 
 flags:
   bit 0: FLAG_COMPRESSED (data is zstd compressed)
@@ -241,9 +241,9 @@ delta_ops: [
 #### DATA_END (0x07)
 
 ```
-+------------+-----------+
-| path: str  | status: u8 |
-+------------+-----------+
++----------+-----------+
+| path: str| status: u8|
++----------+-----------+
 
 status:
   0: OK
@@ -255,9 +255,9 @@ Sender sends this after all DATA chunks for a file. Receiver applies cached mtim
 #### DELETE (0x08)
 
 ```
-+------------+----------+
-| path: str  | is_dir: u8|
-+------------+----------+
++----------+-----------+
+| path: str| is_dir: u8|
++----------+-----------+
 ```
 
 Generator sends after FILE_END if --delete enabled. Lists files on dest not in source.
@@ -265,9 +265,9 @@ Generator sends after FILE_END if --delete enabled. Lists files on dest not in s
 #### DELETE_END (0x09)
 
 ```
-+--------------+
-| count: u64   |
-+--------------+
++-----------+
+| count: u64|
++-----------+
 ```
 
 End of delete list.
@@ -275,9 +275,9 @@ End of delete list.
 #### MKDIR (0x0A)
 
 ```
-+------------+---------+
-| path: str  | mode: u32|
-+------------+---------+
++----------+----------+
+| path: str| mode: u32|
++----------+----------+
 ```
 
 Generator sends as directories are discovered. Receiver creates immediately.
@@ -346,9 +346,9 @@ Sent after DATA_END for files with FLAG_HAS_XATTRS. Receiver applies xattrs.
 #### DONE (0x10)
 
 ```
-+-------------+-------------+--------------+--------------+
-| files_ok: u64| files_err: u64| bytes: u64 | duration_ms: u64|
-+-------------+-------------+--------------+--------------+
++--------------+---------------+-----------+-----------------+
+| files_ok: u64| files_err: u64| bytes: u64| duration_ms: u64|
++--------------+---------------+-----------+-----------------+
 ```
 
 Sync complete. Receiver sends when all DATA_END received and deletes processed.

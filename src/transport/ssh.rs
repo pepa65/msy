@@ -1542,13 +1542,12 @@ impl Transport for SshTransport {
                         }
                         Compression::None => {
                             // Try parallel upload first
-                            if let Ok(mtime) = metadata.modified() {
-                                if let Ok(result) = tokio::runtime::Handle::current().block_on(
+                            if let Ok(mtime) = metadata.modified()
+                                && let Ok(result) = tokio::runtime::Handle::current().block_on(
                                     transport.upload_file_parallel(&source_path, &dest_path, file_size, mtime)
                                 ) {
                                     return Ok(result);
                                 }
-                            }
 
                             tracing::debug!(
                         "File {}: {} bytes, using SFTP streaming (incompressible or parallel skipped)",
@@ -1574,8 +1573,8 @@ impl Transport for SshTransport {
                             let is_resuming = resume_state.is_some();
 
                             // Check if state is stale
-                            if let Some(ref state) = resume_state {
-                                if state.is_stale(mtime_systime) {
+                            if let Some(ref state) = resume_state
+                                && state.is_stale(mtime_systime) {
                                     eprintln!(
                                 "Resume state is stale for {} (file modified). Starting fresh.",
                                 source_path.display()
@@ -1583,7 +1582,6 @@ impl Transport for SshTransport {
                                     TransferState::clear(&source_path, &dest_path, mtime_systime)?;
                                     resume_state = None;
                                 }
-                            }
 
                             // Determine starting position
                             let start_offset = if let Some(ref state) = resume_state {
@@ -1769,8 +1767,8 @@ impl Transport for SshTransport {
                             );
 
                             // Set modification time
-                            if let Ok(modified) = metadata.modified() {
-                                if let Ok(duration) = modified.duration_since(UNIX_EPOCH) {
+                            if let Ok(modified) = metadata.modified()
+                                && let Ok(duration) = modified.duration_since(UNIX_EPOCH) {
                                     let mtime = duration.as_secs();
                                     let atime = mtime;
                                     let _ = sftp.setstat(
@@ -1785,7 +1783,6 @@ impl Transport for SshTransport {
                                         },
                                     );
                                 }
-                            }
 
                             Ok(TransferResult::new(bytes_written))
                         }
@@ -2505,8 +2502,8 @@ impl Transport for SshTransport {
                     let is_resuming = resume_state.is_some();
 
                     // Check if state is stale (shouldn't happen since load() checks, but be safe)
-                    if let Some(ref state) = resume_state {
-                        if state.is_stale(mtime_systime) {
+                    if let Some(ref state) = resume_state
+                        && state.is_stale(mtime_systime) {
                             eprintln!(
                                 "Resume state is stale for {} (file modified). Starting fresh.",
                                 source_buf.display()
@@ -2514,7 +2511,6 @@ impl Transport for SshTransport {
                             TransferState::clear(&source_buf, &dest_buf, mtime_systime)?;
                             resume_state = None;
                         }
-                    }
 
                     // Determine starting position
                     let start_offset = if let Some(ref state) = resume_state {

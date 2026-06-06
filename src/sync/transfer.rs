@@ -88,8 +88,8 @@ impl<'a, T: Transport> Transferrer<'a, T> {
             Ok(None)
         } else {
             // Check if this is a hardlink we should preserve
-            if self.preserve_hardlinks && source.nlink > 1 {
-                if let Some(inode) = source.inode {
+            if self.preserve_hardlinks && source.nlink > 1
+                && let Some(inode) = source.inode {
                     // Loop until we either create a hardlink or copy the file
                     loop {
                         let state = {
@@ -178,7 +178,6 @@ impl<'a, T: Transport> Transferrer<'a, T> {
                         }
                     }
                 }
-            }
 
             // Not a hardlink or not preserving hardlinks - normal copy
             let result = self.copy_file(&source.path, dest_path, source.size).await?;

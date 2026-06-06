@@ -18,8 +18,8 @@ use tempfile::TempDir;
 const FEDORA_HOST: &str = "fedora";
 const FEDORA_USER: &str = "nick";
 
-fn create_fedora_config() -> sy::ssh::config::SshConfig {
-    use sy::ssh::config::SshConfig;
+fn create_fedora_config() -> msy::ssh::config::SshConfig {
+    use msy::ssh::config::SshConfig;
     let mut config = SshConfig::new(FEDORA_HOST);
     config.user = FEDORA_USER.to_string();
     config.port = 22;
@@ -45,9 +45,9 @@ fn cleanup_remote_path(path: &str) {
 #[tokio::test]
 #[ignore]
 async fn test_retry_basic_operation() {
-    use sy::retry::RetryConfig;
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::retry::RetryConfig;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("retry_basic");
 
@@ -98,9 +98,9 @@ async fn test_retry_basic_operation() {
 #[tokio::test]
 #[ignore]
 async fn test_retry_with_aggressive_backoff() {
-    use sy::retry::RetryConfig;
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::retry::RetryConfig;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("retry_backoff");
 
@@ -154,9 +154,9 @@ async fn test_retry_with_aggressive_backoff() {
 #[tokio::test]
 #[ignore]
 async fn test_retry_eventual_failure() {
-    use sy::retry::RetryConfig;
-    use sy::ssh::config::SshConfig;
-    use sy::transport::ssh::SshTransport;
+    use msy::retry::RetryConfig;
+    use msy::ssh::config::SshConfig;
+    use msy::transport::ssh::SshTransport;
 
     // Try to connect to non-existent host (will fail after retries)
     let mut bad_config = SshConfig::new("nonexistent-host-12345.invalid");
@@ -185,9 +185,9 @@ async fn test_retry_eventual_failure() {
 #[tokio::test]
 #[ignore]
 async fn test_connection_pool_with_retry() {
-    use sy::retry::RetryConfig;
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::retry::RetryConfig;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("pool_retry");
 
@@ -262,9 +262,9 @@ async fn test_connection_pool_with_retry() {
 #[tokio::test]
 #[ignore]
 async fn test_large_file_transfer_with_retry() {
-    use sy::retry::RetryConfig;
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::retry::RetryConfig;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("large_retry");
 

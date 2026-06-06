@@ -16,8 +16,8 @@ use tempfile::TempDir;
 const FEDORA_HOST: &str = "fedora";
 const FEDORA_USER: &str = "nick";
 
-fn create_fedora_config() -> sy::ssh::config::SshConfig {
-    use sy::ssh::config::SshConfig;
+fn create_fedora_config() -> msy::ssh::config::SshConfig {
+    use msy::ssh::config::SshConfig;
     let mut config = SshConfig::new(FEDORA_HOST);
     config.user = FEDORA_USER.to_string();
     config.port = 22;
@@ -47,8 +47,8 @@ fn cleanup_remote_path(path: &str) {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_detect_sparse_file_via_scan() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("sparse_scan");
 
@@ -109,8 +109,8 @@ async fn test_ssh_detect_sparse_file_via_scan() {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_regular_file_not_sparse() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("regular_file");
 
@@ -152,8 +152,8 @@ async fn test_ssh_regular_file_not_sparse() {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_detect_hardlink_via_scan() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("hardlink_scan");
 
@@ -214,8 +214,8 @@ async fn test_ssh_detect_hardlink_via_scan() {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_single_file_nlink() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("single_nlink");
 
@@ -256,8 +256,8 @@ async fn test_ssh_single_file_nlink() {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_transfer_large_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("large_transfer");
 
@@ -305,8 +305,8 @@ async fn test_ssh_transfer_large_file() {
 #[tokio::test]
 #[ignore]
 async fn test_ssh_create_and_verify_hardlink() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("create_hardlink");
     let remote_original = format!("{}/original.txt", remote_base);

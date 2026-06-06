@@ -23,8 +23,8 @@ const FEDORA_HOST: &str = "fedora";
 const FEDORA_USER: &str = "nick";
 
 /// Helper to create SSH config for fedora
-fn create_fedora_config() -> sy::ssh::config::SshConfig {
-    use sy::ssh::config::SshConfig;
+fn create_fedora_config() -> msy::ssh::config::SshConfig {
+    use msy::ssh::config::SshConfig;
 
     let mut config = SshConfig::new(FEDORA_HOST);
     config.user = FEDORA_USER.to_string();
@@ -54,8 +54,8 @@ fn cleanup_remote_path(path: &str) {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_scan_directory() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("scan");
 
@@ -112,8 +112,8 @@ async fn test_ssh_scan_directory() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_exists() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("exists");
 
@@ -151,8 +151,8 @@ async fn test_ssh_exists() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_create_dir_all() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("create_dir");
     let nested_path = format!("{}/a/b/c/d", remote_path);
@@ -181,8 +181,8 @@ async fn test_ssh_create_dir_all() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_read_write_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("read_write");
 
@@ -217,8 +217,8 @@ async fn test_ssh_read_write_file() {
 #[ignore]
 #[serial_test::serial]
 async fn test_ssh_remove() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("remove");
 
@@ -262,8 +262,8 @@ async fn test_ssh_remove() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_get_mtime() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("mtime");
 
@@ -302,8 +302,8 @@ async fn test_ssh_get_mtime() {
 #[ignore]
 #[serial_test::serial]
 async fn test_ssh_file_info() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("file_info");
 
@@ -341,8 +341,8 @@ async fn test_ssh_file_info() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_copy_file_basic() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("copy_source");
     let remote_dest = create_remote_test_path("copy_dest");
@@ -386,8 +386,8 @@ async fn test_ssh_copy_file_basic() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_copy_file_with_progress() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("copy_progress");
 
@@ -449,8 +449,8 @@ async fn test_ssh_copy_file_with_progress() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_copy_empty_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("empty_source");
 
@@ -486,8 +486,8 @@ async fn test_ssh_copy_empty_file() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_create_symlink() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("symlink");
     let remote_target = format!("{}/target.txt", remote_base);
@@ -546,8 +546,8 @@ async fn test_ssh_create_symlink() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_read_nonexistent_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("nonexistent");
 
@@ -568,8 +568,8 @@ async fn test_ssh_read_nonexistent_file() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_remove_nonexistent_file() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("nonexistent_remove");
 
@@ -592,8 +592,8 @@ async fn test_ssh_remove_nonexistent_file() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_write_to_readonly_parent() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("readonly");
     let remote_file = format!("{}/file.txt", remote_base);
@@ -644,8 +644,8 @@ async fn test_ssh_write_to_readonly_parent() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_special_characters_in_filename() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("special_chars");
     let remote_file = format!("{}/file with spaces & special chars!.txt", remote_base);
@@ -689,8 +689,8 @@ async fn test_ssh_special_characters_in_filename() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_deep_directory_hierarchy() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("deep");
     // Create 50-level deep hierarchy
@@ -736,8 +736,8 @@ async fn test_ssh_deep_directory_hierarchy() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_binary_data_integrity() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_path = create_remote_test_path("binary");
 
@@ -785,8 +785,8 @@ async fn test_ssh_binary_data_integrity() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_large_file_100mb() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_source = create_remote_test_path("large_100mb");
 
@@ -834,8 +834,8 @@ async fn test_ssh_large_file_100mb() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_many_small_files() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("many_files");
 
@@ -894,8 +894,8 @@ async fn test_ssh_many_small_files() {
 #[serial_test::serial]
 #[ignore]
 async fn test_ssh_connection_pool_concurrent_transfers() {
-    use sy::transport::ssh::SshTransport;
-    use sy::transport::Transport;
+    use msy::transport::ssh::SshTransport;
+    use msy::transport::Transport;
 
     let remote_base = create_remote_test_path("pool_test");
 

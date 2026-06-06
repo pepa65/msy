@@ -212,16 +212,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
     }
 
     fn should_filter_by_size(&self, file_size: u64) -> bool {
-        if let Some(min) = self.min_size {
-            if file_size < min {
+        if let Some(min) = self.min_size
+            && file_size < min {
                 return true;
             }
-        }
-        if let Some(max) = self.max_size {
-            if file_size > max {
+        if let Some(max) = self.max_size
+            && file_size > max {
                 return true;
             }
-        }
         false
     }
 
@@ -954,15 +952,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                                         .unwrap_or(0);
 
                                     // Apply rate limiting
-                                    if let Some(ref limiter) = rate_limiter {
-                                        if bytes_written > 0 {
+                                    if let Some(ref limiter) = rate_limiter
+                                        && bytes_written > 0 {
                                             let sleep_duration =
                                                 limiter.lock().unwrap().consume(bytes_written);
                                             if sleep_duration > Duration::ZERO {
                                                 tokio::time::sleep(sleep_duration).await;
                                             }
                                         }
-                                    }
 
                                     // Verify
                                     let mut verified = true;
@@ -1031,15 +1028,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                                         .unwrap_or(0);
 
                                     // Rate limit
-                                    if let Some(ref limiter) = rate_limiter {
-                                        if bytes_written > 0 {
+                                    if let Some(ref limiter) = rate_limiter
+                                        && bytes_written > 0 {
                                             let sleep_duration =
                                                 limiter.lock().unwrap().consume(bytes_written);
                                             if sleep_duration > Duration::ZERO {
                                                 tokio::time::sleep(sleep_duration).await;
                                             }
                                         }
-                                    }
 
                                     // Verify
                                     let mut verified = true;
@@ -1145,13 +1141,11 @@ impl<T: Transport + 'static> SyncEngine<T> {
                             s.files_created += 1;
                             s.bytes_transferred += res.bytes_written;
 
-                            if self.dry_run {
-                                if let Some(src) = &task.source {
-                                    if !src.is_dir {
+                            if self.dry_run
+                                && let Some(src) = &task.source
+                                    && !src.is_dir {
                                         s.bytes_would_add += src.size;
                                     }
-                                }
-                            }
 
                             if let Some(monitor) = &self.perf_monitor {
                                 monitor.lock().unwrap().add_file_created();
@@ -1167,15 +1161,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                             }
 
                             // Update compression stats
-                            if let Some(ref tr) = res.transfer_result {
-                                if tr.compression_used {
+                            if let Some(ref tr) = res.transfer_result
+                                && tr.compression_used {
                                     s.files_compressed += 1;
                                     if let Some(transferred) = tr.transferred_bytes {
                                         s.compression_bytes_saved +=
                                             res.bytes_written.saturating_sub(transferred);
                                     }
                                 }
-                            }
 
                             // Emit JSON
                             if self.json {
@@ -1191,13 +1184,11 @@ impl<T: Transport + 'static> SyncEngine<T> {
                             s.files_updated += 1;
                             s.bytes_transferred += res.bytes_written;
 
-                            if self.dry_run {
-                                if let Some(src) = &task.source {
-                                    if !src.is_dir {
+                            if self.dry_run
+                                && let Some(src) = &task.source
+                                    && !src.is_dir {
                                         s.bytes_would_change += src.size;
                                     }
-                                }
-                            }
 
                             if let Some(monitor) = &self.perf_monitor {
                                 monitor.lock().unwrap().add_file_updated();
@@ -1292,9 +1283,8 @@ impl<T: Transport + 'static> SyncEngine<T> {
                     if self.resume
                         && !self.dry_run
                         && matches!(task.action, SyncAction::Create | SyncAction::Update)
-                    {
-                        if let Ok(mut state_guard) = resume_state.lock() {
-                            if let Some(state) = state_guard.as_mut() {
+                        && let Ok(mut state_guard) = resume_state.lock()
+                            && let Some(state) = state_guard.as_mut() {
                                 // Add to state
                                 let rel_path = task
                                     .dest_path
@@ -1331,17 +1321,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                                     );
                                     // Only save checkpoints if destination is local
                                     // (resume state files must be on local filesystem)
-                                    if !self.dest_is_remote {
-                                        if let Err(e) = state.save(destination) {
+                                    if !self.dest_is_remote
+                                        && let Err(e) = state.save(destination) {
                                             tracing::warn!("Failed to save checkpoint: {}", e);
                                         }
-                                    }
                                     files_since_checkpoint = 0;
                                     bytes_since_checkpoint = 0;
                                 }
                             }
-                        }
-                    }
                 }
                 Err((task, e)) => {
                     // Error handling
@@ -1477,8 +1464,8 @@ impl<T: Transport + 'static> SyncEngine<T> {
         }
 
         // Save directory cache if enabled
-        if self.use_cache && !self.dry_run {
-            if let Some(ref cache) = dir_cache {
+        if self.use_cache && !self.dry_run
+            && let Some(ref cache) = dir_cache {
                 // Only save cache if destination is local
                 if !self.dest_is_remote {
                     if let Err(e) = cache.save(destination) {
@@ -1490,11 +1477,10 @@ impl<T: Transport + 'static> SyncEngine<T> {
                     tracing::debug!("Skipping cache save - destination directory doesn't exist");
                 }
             }
-        }
 
         // Store checksums in database if enabled
-        if let Some(ref db) = checksum_db {
-            if !self.dry_run {
+        if let Some(ref db) = checksum_db
+            && !self.dry_run {
                 let mut stored_count = 0;
                 let verifier = IntegrityVerifier::new(
                     if self.checksum {
@@ -1552,7 +1538,6 @@ impl<T: Transport + 'static> SyncEngine<T> {
                     }
                 }
             }
-        }
 
         // If we got here, either no errors occurred or errors were within the threshold
         Ok(final_stats)
@@ -1828,15 +1813,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                                             }
                                         }
 
-                                        if let Some(ref limiter) = rate_limiter {
-                                            if bytes_written > 0 {
+                                        if let Some(ref limiter) = rate_limiter
+                                            && bytes_written > 0 {
                                                 let sleep_duration =
                                                     limiter.lock().unwrap().consume(bytes_written);
                                                 if sleep_duration > Duration::ZERO {
                                                     tokio::time::sleep(sleep_duration).await;
                                                 }
                                             }
-                                        }
 
                                         if json {
                                             SyncEvent::Create {
@@ -1907,15 +1891,14 @@ impl<T: Transport + 'static> SyncEngine<T> {
                                             }
                                         }
 
-                                        if let Some(ref limiter) = rate_limiter {
-                                            if bytes_written > 0 {
+                                        if let Some(ref limiter) = rate_limiter
+                                            && bytes_written > 0 {
                                                 let sleep_duration =
                                                     limiter.lock().unwrap().consume(bytes_written);
                                                 if sleep_duration > Duration::ZERO {
                                                     tokio::time::sleep(sleep_duration).await;
                                                 }
                                             }
-                                        }
 
                                         if json {
                                             let delta_used = transfer_result

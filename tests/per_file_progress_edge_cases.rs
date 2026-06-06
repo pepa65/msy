@@ -15,8 +15,8 @@ async fn test_progress_with_empty_file() {
     let empty_file = source.path().join("empty.dat");
     fs::write(&empty_file, []).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -49,8 +49,8 @@ async fn test_progress_with_exact_chunk_boundary() {
     let data = vec![0x42u8; 2 * 1024 * 1024];
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -90,8 +90,8 @@ async fn test_progress_with_odd_file_size() {
     let data = vec![0x42u8; 1_500_000]; // 1.5MB (not aligned to 1MB chunks)
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -131,8 +131,8 @@ async fn test_progress_callback_never_exceeds_total() {
     let data = vec![0x42u8; 10 * 1024 * 1024]; // 10MB
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -167,8 +167,8 @@ async fn test_progress_monotonic_increase() {
     let data = vec![0x42u8; 5 * 1024 * 1024]; // 5MB
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -207,8 +207,8 @@ async fn test_progress_with_zero_byte_file() {
     let file = source.path().join("zero.dat");
     fs::File::create(&file).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -240,8 +240,8 @@ async fn test_progress_preserves_mtime() {
     // Get original mtime
     let original_mtime = fs::metadata(&file).unwrap().modified().unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -284,8 +284,8 @@ async fn test_progress_with_binary_data() {
     }
     fs::write(&file, &data).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -311,8 +311,8 @@ async fn test_progress_with_binary_data() {
 
 #[tokio::test]
 async fn test_progress_concurrent_files() {
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let source = TempDir::new().unwrap();
     let dest = TempDir::new().unwrap();
@@ -378,8 +378,8 @@ async fn test_progress_with_readonly_source() {
     perms.set_mode(0o444); // Read-only
     fs::set_permissions(&file, perms).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
@@ -406,8 +406,8 @@ async fn test_progress_parent_directory_created() {
     let file = source.path().join("test.dat");
     fs::write(&file, vec![0x42u8; 2 * 1024 * 1024]).unwrap();
 
-    use sy::transport::local::LocalTransport;
-    use sy::transport::Transport;
+    use msy::transport::local::LocalTransport;
+    use msy::transport::Transport;
 
     let transport = LocalTransport::new();
 
