@@ -132,7 +132,7 @@ pub enum SymlinkMode {
     sy /source user@host:/dest --resume-only    # Only resume, don't start new transfers
     sy /source user@host:/dest --clear-resume-state  # Clear all resume state
 
-For more information: https://github.com/nijaru/sy")]
+For more information: https://github.com/pepa65/msy")]
 pub struct Cli {
     /// Source path (local: /path or remote: user@host:/path)
     /// Optional when using --profile

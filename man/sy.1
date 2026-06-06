@@ -1,6 +1,6 @@
-.TH SY 1 "October 2025" "sy 0.0.22" "User Commands"
+.TH MSY 1 "June 2026" "msy 0.4.2" "User Commands"
 .SH NAME
-sy \- modern file synchronization tool
+msy \- Modern musl rsync alternative - Fast, parallel file synchronization
 .SH SYNOPSIS
 .B sy
 [\fIOPTIONS\fR]
@@ -13,12 +13,12 @@ sy \- modern file synchronization tool
 .B sy
 \fB\-\-list\-profiles\fR
 .SH DESCRIPTION
-.B sy
+.B msy
 is a modern file synchronization tool written in Rust, designed as a faster and more
 reliable alternative to rsync. It provides parallel transfers, adaptive compression,
 multi-layer verification, and beautiful progress output.
 .PP
-.B sy
+.B msy
 supports both local and remote (SSH) synchronization with intelligent delta transfer,
 resume support, and extensive filtering options.
 .SH ARGUMENTS
@@ -273,7 +273,7 @@ sy --list-profiles
 .fi
 .SH CONFIGURATION
 .B sy
-reads configuration from \fB~/.config/sy/config.toml\fR. Configuration files support
+reads configuration from \fB~/.config/msy/config.toml\fR. Configuration files support
 named profiles with predefined sync settings.
 .PP
 Example configuration:
@@ -304,10 +304,10 @@ BLAKE3 + verify every block during transfer. Maximum reliability, slowest. Use w
 data integrity is paramount.
 .SH FILES
 .TP
-.B ~/.config/sy/config.toml
+.B ~/.config/msy/config.toml
 User configuration file containing named profiles.
 .TP
-.B ~/.config/sy/templates/
+.B ~/.config/msy/templates/
 Directory containing ignore templates (e.g., rust.syignore, node.syignore).
 .TP
 .B .syignore
@@ -322,10 +322,10 @@ Directory cache file created in destination directory when \fB\-\-use\-cache\fR 
 .B sy
 supports pre-sync and post-sync hooks placed in:
 .TP
-.B ~/.config/sy/hooks/pre-sync.d/
+.B ~/.config/msy/hooks/pre-sync.d/
 Scripts executed before sync begins.
 .TP
-.B ~/.config/sy/hooks/post-sync.d/
+.B ~/.config/msy/hooks/post-sync.d/
 Scripts executed after sync completes.
 .PP
 Hooks receive sync metadata as JSON on stdin and must be executable.
@@ -353,8 +353,8 @@ Insufficient disk space
 .BR ssh (1),
 .BR gitignore (5)
 .PP
-Project homepage: https://github.com/nijaru/sy
+Project homepage: https://github.com/pepa65/msy
 .SH AUTHOR
-Nick Russo <nick@nijaru.dev>
+Nick Russo <nick@nijaru.dev>, <github.com/pepa65>
 .SH COPYRIGHT
-Copyright \(co 2025 Nick Russo. Licensed under the MIT License.
+Copyright \(co 2025 Nick Russo, 2026 github.com/pepa65. Licensed under the MIT License.
