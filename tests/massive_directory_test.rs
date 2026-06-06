@@ -35,7 +35,7 @@ fn test_sync_1000_files() {
 
 	// Sync using sy
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -63,7 +63,7 @@ fn test_sync_10k_files() {
 
 	// Sync using sy
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("-v")
@@ -101,7 +101,7 @@ fn test_sync_100k_files() {
 	// Sync using sy
 	println!("Syncing 100,000 files...");
 	let sync_start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("-v")
@@ -131,7 +131,7 @@ fn test_idempotent_sync_10k_files() {
 
 	// First sync
 	println!("First sync...");
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -142,7 +142,7 @@ fn test_idempotent_sync_10k_files() {
 	// Second sync (should be fast - no changes)
 	println!("Second sync (idempotent)...");
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -175,7 +175,7 @@ fn test_deletion_planning_10k_files() {
 
 	// Sync with delete flag (force-delete needed for test with 100% deletion)
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--delete")
@@ -216,7 +216,7 @@ fn test_nested_directories_10k_files() {
 
 	// Sync using sy
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -248,7 +248,7 @@ fn test_progress_accuracy_10k_files() {
 	create_directory_with_files(source_dir.path(), 10_000).unwrap();
 
 	// Sync with JSON output to track progress
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--json")

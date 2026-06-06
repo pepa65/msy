@@ -22,7 +22,7 @@ fn bench_sy_vs_rsync_vs_cp(c: &mut Criterion) {
 	group.bench_function("sy", |b| {
 		b.iter(|| {
 			let dest = TempDir::new().unwrap();
-			let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+			let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
@@ -74,7 +74,7 @@ fn bench_sy_vs_rsync_large_file(c: &mut Criterion) {
 	group.bench_function("sy", |b| {
 		b.iter(|| {
 			let dest = TempDir::new().unwrap();
-			let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+			let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
@@ -119,7 +119,7 @@ fn bench_idempotent_comparison(c: &mut Criterion) {
 	setup_files(&source, 100);
 
 	// Initial sync for all tools
-	Command::new(env!("CARGO_BIN_EXE_msy"))
+	Command::new(env!("CARGO_BIN_EXE_sy"))
 		.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 		.output()
 		.unwrap();
@@ -135,7 +135,7 @@ fn bench_idempotent_comparison(c: &mut Criterion) {
 	// Benchmark sy idempotent
 	group.bench_function("sy", |b| {
 		b.iter(|| {
-			let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+			let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
@@ -172,7 +172,7 @@ fn bench_many_files_comparison(c: &mut Criterion) {
 	group.bench_function("sy", |b| {
 		b.iter(|| {
 			let dest = TempDir::new().unwrap();
-			let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+			let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();

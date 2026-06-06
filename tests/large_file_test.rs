@@ -58,7 +58,7 @@ fn test_sync_100mb_file() {
 	create_large_file(&source_file, size).unwrap();
 
 	// Sync using sy
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -90,7 +90,7 @@ fn test_sync_500mb_file() {
 	create_large_file(&source_file, size).unwrap();
 
 	// Sync using sy
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -122,7 +122,7 @@ fn test_sync_1gb_file() {
 	create_large_file(&source_file, size).unwrap();
 
 	// Sync using sy with progress output
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("-v")
@@ -174,7 +174,7 @@ fn test_sync_1gb_sparse_file() {
 	println!("Source file: logical={}MB, allocated={}MB", size / MB, source_allocated / MB);
 
 	// Sync using sy
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -206,7 +206,7 @@ fn test_progress_accuracy_100mb() {
 	create_large_file(&source_file, size).unwrap();
 
 	// Sync with JSON output to verify progress
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--json")
@@ -256,7 +256,7 @@ fn test_idempotent_sync_100mb() {
 	create_large_file(&source_file, size).unwrap();
 
 	// First sync
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -266,7 +266,7 @@ fn test_idempotent_sync_100mb() {
 
 	// Second sync (should be fast - file unchanged)
 	let start = std::time::Instant::now();
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()

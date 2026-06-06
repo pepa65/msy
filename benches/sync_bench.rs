@@ -21,7 +21,7 @@ fn bench_sync_small_files(c: &mut Criterion) {
 				let dest = TempDir::new().unwrap();
 				setup_files(&source, count);
 
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 					.output()
 					.unwrap();
@@ -52,7 +52,7 @@ fn bench_sync_nested_dirs(c: &mut Criterion) {
 				fs::create_dir_all(&path).unwrap();
 				fs::write(path.join("file.txt"), "content").unwrap();
 
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 					.output()
 					.unwrap();
@@ -80,7 +80,7 @@ fn bench_sync_large_files(c: &mut Criterion) {
 				let content = "x".repeat(size_mb * 1024 * 1024);
 				fs::write(source.path().join("large.txt"), &content).unwrap();
 
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 					.output()
 					.unwrap();
@@ -100,14 +100,14 @@ fn bench_sync_idempotent(c: &mut Criterion) {
 		setup_files(&source, 100);
 
 		// First sync
-		Command::new(env!("CARGO_BIN_EXE_msy"))
+		Command::new(env!("CARGO_BIN_EXE_sy"))
 			.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 			.output()
 			.unwrap();
 
 		b.iter(|| {
 			// Subsequent syncs (should be fast - all skipped)
-			let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+			let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
@@ -129,13 +129,13 @@ fn bench_cache_full_vs_incremental(c: &mut Criterion) {
 			setup_files(&source, count);
 
 			// First sync to set up dest
-			Command::new(env!("CARGO_BIN_EXE_msy"))
+			Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
 
 			b.iter(|| {
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=false"])
 					.output()
 					.unwrap();
@@ -152,13 +152,13 @@ fn bench_cache_full_vs_incremental(c: &mut Criterion) {
 			setup_files(&source, count);
 
 			// First sync with cache enabled
-			Command::new(env!("CARGO_BIN_EXE_msy"))
+			Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=true"])
 				.output()
 				.unwrap();
 
 			b.iter(|| {
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=true"])
 					.output()
 					.unwrap();
@@ -190,13 +190,13 @@ fn bench_cache_nested_directories(c: &mut Criterion) {
 			fs::write(path.join("file.txt"), "content").unwrap();
 
 			// First sync
-			Command::new(env!("CARGO_BIN_EXE_msy"))
+			Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap()])
 				.output()
 				.unwrap();
 
 			b.iter(|| {
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=false"])
 					.output()
 					.unwrap();
@@ -221,13 +221,13 @@ fn bench_cache_nested_directories(c: &mut Criterion) {
 			fs::write(path.join("file.txt"), "content").unwrap();
 
 			// First sync with cache
-			Command::new(env!("CARGO_BIN_EXE_msy"))
+			Command::new(env!("CARGO_BIN_EXE_sy"))
 				.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=true"])
 				.output()
 				.unwrap();
 
 			b.iter(|| {
-				let output = Command::new(env!("CARGO_BIN_EXE_msy"))
+				let output = Command::new(env!("CARGO_BIN_EXE_sy"))
 					.args([source.path().to_str().unwrap(), dest.path().to_str().unwrap(), "--use-cache=true"])
 					.output()
 					.unwrap();

@@ -114,7 +114,7 @@ fn test_sync_preserves_hardlinks() {
 	assert_eq!(get_nlink(&file1).unwrap(), 2);
 
 	// Sync using sy
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -166,7 +166,7 @@ fn test_bisync_with_hardlinks() {
 	fs::hard_link(&file1, &file2).unwrap();
 
 	// First sync (initial)
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--bidirectional")
@@ -176,7 +176,7 @@ fn test_bisync_with_hardlinks() {
 	assert!(output.status.success(), "Initial bisync failed");
 
 	// Second sync (should be idempotent)
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--bidirectional")
@@ -213,7 +213,7 @@ fn test_bisync_hardlink_conflict() {
 	create_file(dest_dir.path(), "file2.txt", "dest data 2").unwrap();
 
 	// Run bisync
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--bidirectional")
@@ -252,7 +252,7 @@ fn test_hardlinks_across_directories() {
 	assert_eq!(get_inode(&file1).unwrap(), get_inode(&file2).unwrap());
 
 	// Sync using sy
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.output()
@@ -291,7 +291,7 @@ fn test_hardlink_modification_detection() {
 	fs::hard_link(&file1, &file2).unwrap();
 
 	// Initial sync
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--bidirectional")
@@ -307,7 +307,7 @@ fn test_hardlink_modification_detection() {
 	drop(file);
 
 	// Second sync should detect change
-	let output = std::process::Command::new(env!("CARGO_BIN_EXE_msy"))
+	let output = std::process::Command::new(env!("CARGO_BIN_EXE_sy"))
 		.arg(source_dir.path())
 		.arg(dest_dir.path())
 		.arg("--bidirectional")

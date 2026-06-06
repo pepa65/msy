@@ -7,7 +7,7 @@ use std::process::Command;
 use tempfile::TempDir;
 
 fn sy_bin() -> String {
-	std::env::var("CARGO_BIN_EXE_msy").unwrap_or_else(|_| "target/debug/sy".to_string())
+	std::env::var("CARGO_BIN_EXE_sy").unwrap_or_else(|_| "target/debug/sy".to_string())
 }
 
 #[test]

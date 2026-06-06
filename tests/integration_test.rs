@@ -4,7 +4,7 @@ use std::process::Command;
 use tempfile::TempDir;
 
 fn sy_bin() -> String {
-	env!("CARGO_BIN_EXE_msy").to_string()
+	env!("CARGO_BIN_EXE_sy").to_string()
 }
 
 fn setup_test_dir(_name: &str) -> (TempDir, TempDir) {
