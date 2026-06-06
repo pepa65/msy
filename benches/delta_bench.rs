@@ -49,7 +49,7 @@ fn bench_delta_sync_small_change(c: &mut Criterion) {
                     create_sparse_file(&source.path().join("large.bin"), size_mb, 0);
 
                     // First sync - full copy
-                    Command::new(env!("CARGO_BIN_EXE_sy"))
+                    Command::new(env!("CARGO_BIN_EXE_msy"))
                         .args([
                             source.path().to_str().unwrap(),
                             dest.path().to_str().unwrap(),
@@ -61,7 +61,7 @@ fn bench_delta_sync_small_change(c: &mut Criterion) {
                     create_sparse_file(&source.path().join("large.bin"), size_mb, 1);
 
                     // Second sync - should use delta sync
-                    let output = Command::new(env!("CARGO_BIN_EXE_sy"))
+                    let output = Command::new(env!("CARGO_BIN_EXE_msy"))
                         .args([
                             source.path().to_str().unwrap(),
                             dest.path().to_str().unwrap(),
@@ -97,7 +97,7 @@ fn bench_delta_sync_vs_full_copy(c: &mut Criterion) {
     create_sparse_file(&source_delta.path().join("file.bin"), size_mb, 0);
 
     // Initial sync
-    Command::new(env!("CARGO_BIN_EXE_sy"))
+    Command::new(env!("CARGO_BIN_EXE_msy"))
         .args([
             source_delta.path().to_str().unwrap(),
             dest_delta.path().to_str().unwrap(),
@@ -111,7 +111,7 @@ fn bench_delta_sync_vs_full_copy(c: &mut Criterion) {
     // Benchmark delta sync (update)
     group.bench_function("delta_sync", |b| {
         b.iter(|| {
-            let output = Command::new(env!("CARGO_BIN_EXE_sy"))
+            let output = Command::new(env!("CARGO_BIN_EXE_msy"))
                 .args([
                     source_delta.path().to_str().unwrap(),
                     dest_delta.path().to_str().unwrap(),
@@ -123,7 +123,7 @@ fn bench_delta_sync_vs_full_copy(c: &mut Criterion) {
 
             // Restore original for next iteration
             create_sparse_file(&source_delta.path().join("file.bin"), size_mb, 0);
-            Command::new(env!("CARGO_BIN_EXE_sy"))
+            Command::new(env!("CARGO_BIN_EXE_msy"))
                 .args([
                     source_delta.path().to_str().unwrap(),
                     dest_delta.path().to_str().unwrap(),
@@ -149,7 +149,7 @@ fn bench_delta_sync_vs_full_copy(c: &mut Criterion) {
     group.bench_function("full_copy", |b| {
         b.iter(|| {
             let dest = TempDir::new().unwrap();
-            let output = Command::new(env!("CARGO_BIN_EXE_sy"))
+            let output = Command::new(env!("CARGO_BIN_EXE_msy"))
                 .args([
                     source_full.path().to_str().unwrap(),
                     dest.path().to_str().unwrap(),
@@ -183,7 +183,7 @@ fn bench_delta_sync_large_file(c: &mut Criterion) {
         create_sparse_file(&source.path().join("huge.bin"), 1024, 0);
 
         // Initial sync
-        Command::new(env!("CARGO_BIN_EXE_sy"))
+        Command::new(env!("CARGO_BIN_EXE_msy"))
             .args([
                 source.path().to_str().unwrap(),
                 dest.path().to_str().unwrap(),
@@ -195,7 +195,7 @@ fn bench_delta_sync_large_file(c: &mut Criterion) {
         create_sparse_file(&source.path().join("huge.bin"), 1024, 100);
 
         b.iter(|| {
-            let output = Command::new(env!("CARGO_BIN_EXE_sy"))
+            let output = Command::new(env!("CARGO_BIN_EXE_msy"))
                 .args([
                     source.path().to_str().unwrap(),
                     dest.path().to_str().unwrap(),
@@ -207,7 +207,7 @@ fn bench_delta_sync_large_file(c: &mut Criterion) {
 
             // Restore for next iteration
             create_sparse_file(&source.path().join("huge.bin"), 1024, 0);
-            Command::new(env!("CARGO_BIN_EXE_sy"))
+            Command::new(env!("CARGO_BIN_EXE_msy"))
                 .args([
                     source.path().to_str().unwrap(),
                     dest.path().to_str().unwrap(),

@@ -3,8 +3,8 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::SystemTime;
-use sy::sync::scanner::FileEntry;
-use sy::sync::strategy::StrategyPlanner;
+use msy::sync::scanner::FileEntry;
+use msy::sync::strategy::StrategyPlanner;
 use tempfile::TempDir;
 
 fn bench_deletion_planning(c: &mut Criterion) {
@@ -57,7 +57,7 @@ fn bench_deletion_planning(c: &mut Criterion) {
 }
 
 fn bench_bloom_filter_memory(c: &mut Criterion) {
-    use sy::sync::scale::FileSetBloom;
+    use msy::sync::scale::FileSetBloom;
 
     let mut group = c.benchmark_group("bloom_filter_memory");
 
@@ -91,7 +91,7 @@ fn bench_bloom_filter_memory(c: &mut Criterion) {
 }
 
 fn bench_bloom_filter_lookup(c: &mut Criterion) {
-    use sy::sync::scale::FileSetBloom;
+    use msy::sync::scale::FileSetBloom;
 
     let mut group = c.benchmark_group("bloom_filter_lookup");
 

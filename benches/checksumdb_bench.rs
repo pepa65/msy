@@ -1,8 +1,8 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::path::PathBuf;
 use std::time::SystemTime;
-use sy::integrity::Checksum;
-use sy::sync::checksumdb::ChecksumDatabase;
+use msy::integrity::Checksum;
+use msy::sync::checksumdb::ChecksumDatabase;
 use tempfile::TempDir;
 
 /// Benchmark: Write checksums to database

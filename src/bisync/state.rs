@@ -1116,7 +1116,9 @@ mod tests {
         let original_cache_home = std::env::var("XDG_CACHE_HOME").ok();
 
         // Set cache dir BEFORE creating paths (so get_state_dir() uses it)
-        std::env::set_var("XDG_CACHE_HOME", temp_dir.path().join("cache"));
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", temp_dir.path().join("cache"));
+        };
 
         let source = temp_dir.path().join("source");
         let dest = temp_dir.path().join("dest");
@@ -1151,8 +1153,12 @@ mod tests {
 
         // Restore original XDG_CACHE_HOME to avoid leaking to other tests
         match original_cache_home {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 

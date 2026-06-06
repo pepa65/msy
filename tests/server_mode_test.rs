@@ -38,7 +38,9 @@ mod tests {
         // Update PATH to include sy binary dir
         let path_env = std::env::var("PATH").unwrap_or_default();
         let new_path = format!("{}:{}", sy_bin.parent().unwrap().display(), path_env);
-        std::env::set_var("PATH", new_path);
+        unsafe {
+            std::env::set_var("PATH", new_path);
+        };
 
         let dest_sync_path = SyncPath::Local {
             path: dest.clone(),
@@ -89,7 +91,9 @@ mod tests {
         // Update PATH to include sy binary dir
         let path_env = std::env::var("PATH").unwrap_or_default();
         let new_path = format!("{}:{}", sy_bin.parent().unwrap().display(), path_env);
-        std::env::set_var("PATH", new_path);
+        unsafe {
+            std::env::set_var("PATH", new_path);
+        };
 
         let source_sync_path = SyncPath::Local {
             path: source.clone(),

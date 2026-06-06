@@ -110,7 +110,9 @@ mod tests {
 
         // Set cache dir for test isolation
         let cache_dir = temp_dir.path().join("cache");
-        std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        }
 
         let lock = SyncLock::acquire(&source, &dest).unwrap();
 
@@ -125,8 +127,12 @@ mod tests {
 
         // Restore original env var
         match original {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 
@@ -142,7 +148,9 @@ mod tests {
 
         // Set cache dir for test isolation
         let cache_dir = temp_dir.path().join("cache");
-        std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        };
 
         // Acquire first lock
         let _lock1 = SyncLock::acquire(&source, &dest).unwrap();
@@ -157,8 +165,12 @@ mod tests {
 
         // Restore original env var
         match original {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 
@@ -174,7 +186,9 @@ mod tests {
 
         // Set cache dir for test isolation
         let cache_dir = temp_dir.path().join("cache");
-        std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        };
 
         {
             let _lock1 = SyncLock::acquire(&source, &dest).unwrap();
@@ -186,8 +200,12 @@ mod tests {
 
         // Restore original env var
         match original {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 
@@ -205,7 +223,9 @@ mod tests {
 
         // Set cache dir for test isolation
         let cache_dir = temp_dir.path().join("cache");
-        std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        };
 
         // Should be able to lock different pairs simultaneously
         let _lock1 = SyncLock::acquire(&source1, &dest1).unwrap();
@@ -213,8 +233,12 @@ mod tests {
 
         // Restore original env var
         match original {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 
@@ -230,7 +254,9 @@ mod tests {
 
         // Set cache dir for test isolation (before spawning thread)
         let cache_dir = temp_dir.path().join("cache");
-        std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        unsafe {
+            std::env::set_var("XDG_CACHE_HOME", &cache_dir);
+        };
 
         // Acquire lock in main thread
         let lock = SyncLock::acquire(&source, &dest).unwrap();
@@ -259,8 +285,12 @@ mod tests {
 
         // Restore original env var
         match original {
-            Some(val) => std::env::set_var("XDG_CACHE_HOME", val),
-            None => std::env::remove_var("XDG_CACHE_HOME"),
+            Some(val) => unsafe {
+                std::env::set_var("XDG_CACHE_HOME", val)
+            },
+            None => unsafe {
+                std::env::remove_var("XDG_CACHE_HOME")
+            },
         }
     }
 }

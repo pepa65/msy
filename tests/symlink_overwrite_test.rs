@@ -11,7 +11,7 @@ use tempfile::TempDir;
 
 /// Helper to run sy command
 fn run_sy(args: &[&str]) -> std::process::Output {
-    Command::new(env!("CARGO_BIN_EXE_sy"))
+    Command::new(env!("CARGO_BIN_EXE_msy"))
         .args(args)
         .output()
         .expect("Failed to execute sy")

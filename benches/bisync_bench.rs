@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::SystemTime;
-use sy::bisync::{classify_changes, resolve_changes, ConflictResolution};
-use sy::sync::scanner::FileEntry;
+use msy::bisync::{classify_changes, resolve_changes, ConflictResolution};
+use msy::sync::scanner::FileEntry;
 
 fn make_file_entry(path: &str, size: u64, mtime_secs_ago: u64) -> FileEntry {
     let now = SystemTime::now();
@@ -110,9 +110,9 @@ fn bench_resolve_changes(c: &mut Criterion) {
             let source_entry = make_file_entry(&path, 1000, 0);
             let dest_entry = make_file_entry(&path, 2000, 0);
 
-            changes.push(sy::bisync::Change {
+            changes.push(msy::bisync::Change {
                 path: PathBuf::from(&path),
-                change_type: sy::bisync::ChangeType::ModifiedBoth,
+                change_type: msy::bisync::ChangeType::ModifiedBoth,
                 source_entry: Some(source_entry),
                 dest_entry: Some(dest_entry),
             });
