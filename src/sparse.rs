@@ -458,7 +458,9 @@ mod tests {
 		std::fs::write(&file1, b"At zero").unwrap();
 
 		let regions = detect_data_regions(&file1);
-		if let Ok(r) = regions && !r.is_empty() {
+		if let Ok(r) = regions
+			&& !r.is_empty()
+		{
 			assert_eq!(r[0].offset, 0, "First region should start at 0");
 		}
 
@@ -467,7 +469,9 @@ mod tests {
 		std::fs::write(&file2, b"X").unwrap();
 
 		let regions = detect_data_regions(&file2);
-		if let Ok(r) = regions && !r.is_empty() {
+		if let Ok(r) = regions
+			&& !r.is_empty()
+		{
 			assert_eq!(r[0].offset, 0);
 			assert!(r[0].length >= 1, "Should contain at least 1 byte");
 		}

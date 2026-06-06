@@ -347,7 +347,9 @@ pub trait Transport: Send + Sync {
 					}
 				}
 
-				if !acl_entries.is_empty() && let Err(e) = setfacl(&[&path], &acl_entries, None) {
+				if !acl_entries.is_empty()
+					&& let Err(e) = setfacl(&[&path], &acl_entries, None)
+				{
 					tracing::warn!("Failed to set ACLs on {}: {}", path.display(), e);
 				}
 			})
