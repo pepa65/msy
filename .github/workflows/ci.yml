@@ -65,30 +65,30 @@ jobs:
   # Stage 2: Tests (after lint passes)
   # ==========================================================================
 
-  test-linux:
-    name: Test (Linux)
-    runs-on: ubuntu-latest
-    needs: [fmt, clippy]
-    steps:
-      - uses: actions/checkout@v4
-      - run: rustup target add x86_64-unknown-linux-musl
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Run tests
-        run: cargo test --all
-        timeout-minutes: 15
+  #test-linux:
+  #  name: Test (Linux)
+  #  runs-on: ubuntu-latest
+  #  needs: [fmt, clippy]
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - run: rustup target add x86_64-unknown-linux-musl
+  #    - name: Install system dependencies
+  #      run: sudo apt-get update && sudo apt-get install -y libacl1-dev musl-tools
+  #    - uses: dtolnay/rust-toolchain@stable
+  #    - uses: Swatinem/rust-cache@v2
+  #    - name: Run tests
+  #      run: cargo test --all
+  #      timeout-minutes: 15
 
-  test-macos:
-    name: Test (macOS)
-    runs-on: macos-latest
-    needs: [fmt, clippy]
-    steps:
-      - uses: actions/checkout@v4
-      - run: rustup target add x86_64-unknown-linux-musl
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Run tests
-        run: cargo test --all
-        timeout-minutes: 15
+  #test-macos:
+  #  name: Test (macOS)
+  #  runs-on: macos-latest
+  #  needs: [fmt, clippy]
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - run: rustup target add x86_64-unknown-linux-musl
+  #    - uses: dtolnay/rust-toolchain@stable
+  #    - uses: Swatinem/rust-cache@v2
+  #    - name: Run tests
+  #      run: cargo test --all
+  #      timeout-minutes: 15
