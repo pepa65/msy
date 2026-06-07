@@ -129,7 +129,10 @@ fn test_update_existing_files() {
 	fs::write(source.path().join("file.txt"), "v2").unwrap();
 
 	// Sync again
-	let output = Command::new(sy_bin()).args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
+	let output = Command::new(sy_bin())
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()])
+		.output()
+		.unwrap();
 
 	assert!(output.status.success());
 	assert_eq!(fs::read_to_string(dest.path().join("file.txt")).unwrap(), "v2");
@@ -306,7 +309,10 @@ fn test_large_file_update_with_delta_sync() {
 	drop(file);
 
 	// Sync again - should use delta sync
-	let output = Command::new(sy_bin()).args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
+	let output = Command::new(sy_bin())
+		.args(["-v", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()])
+		.output()
+		.unwrap();
 
 	assert!(output.status.success());
 	let stdout = String::from_utf8_lossy(&output.stdout);
