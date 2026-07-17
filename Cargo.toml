@@ -97,6 +97,8 @@ crossbeam-channel = "0.5.15"
 memmap2 = "0.9.9"
 bitflags = "2.10.0"
 
+quick-xml = "0.41"
+
 # Platform-specific dependencies
 [target.'cfg(unix)'.dependencies]
 xattr = "1.3"
