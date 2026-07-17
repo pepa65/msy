@@ -81,8 +81,8 @@ proptest! {
 
 		let stdout = String::from_utf8_lossy(&output2.stdout);
 		// Second sync should skip all files
-		let expected_skip_line = format!("Files skipped:     {}", file_count);
-		prop_assert!(stdout.contains(&expected_skip_line));
+		let expected_summary = format!("Files scanned/created/updated/skipped/deleted: {} 0 0 {} 0", file_count, file_count);
+		prop_assert!(stdout.contains(&expected_summary));
 	}
 
 	#[test]

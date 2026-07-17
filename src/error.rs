@@ -74,8 +74,8 @@ pub enum SyncError {
 	BlockCorruption { path: PathBuf, block_number: usize, expected_checksum: String, actual_checksum: String },
 }
 
-impl From<bincode::Error> for SyncError {
-	fn from(err: bincode::Error) -> Self {
+impl From<postcard::Error> for SyncError {
+	fn from(err: postcard::Error) -> Self {
 		SyncError::Database(err.to_string())
 	}
 }

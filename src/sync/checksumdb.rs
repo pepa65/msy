@@ -82,7 +82,7 @@ impl ChecksumDatabase {
 		};
 
 		// Deserialize entry
-		let entry: ChecksumEntry = bincode::deserialize(&value)
+		let entry: ChecksumEntry = postcard::from_bytes(&value)
 			.map_err(|e| crate::error::SyncError::Database(format!("Failed to deserialize checksum entry for {}: {}", path.display(), e)))?;
 
 		// Verify metadata matches
@@ -127,7 +127,7 @@ impl ChecksumDatabase {
 
 		// Serialize and store
 		let key = Self::path_to_key(path);
-		let value = bincode::serialize(&entry)?;
+		let value = postcard::to_allocvec(&entry)?;
 		self.partition.insert(&key, &value)?;
 
 		tracing::debug!("Stored checksum for {}", path.display());
@@ -191,7 +191,7 @@ impl ChecksumDatabase {
 
 		for item in self.partition.iter() {
 			let (key, value) = item?;
-			let entry: ChecksumEntry = bincode::deserialize(&value)
+			let entry: ChecksumEntry = postcard::from_bytes(&value)
 				.map_err(|e| crate::error::SyncError::Database(format!("Failed to deserialize checksum entry for {}: {}", String::from_utf8_lossy(&key), e)))?;
 
 			total_entries += 1;
