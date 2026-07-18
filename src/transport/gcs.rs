@@ -8,6 +8,7 @@ use async_trait::async_trait;
 use bytes::Bytes;
 use futures::stream::BoxStream;
 use object_store::ObjectStore;
+use object_store::ObjectStoreExt;
 use object_store::gcp::GoogleCloudStorageBuilder;
 use object_store::path::Path as ObjectPath;
 use std::path::{Path, PathBuf};
