@@ -23,7 +23,7 @@ impl Default for SshConfig {
 		Self {
 			hostname: String::new(),
 			port: 22,
-			user: whoami::username(),
+			user: whoami::username().unwrap_or_default(),
 			identity_file: Vec::new(),
 			proxy_jump: None,
 			control_master: false,
@@ -40,7 +40,7 @@ impl SshConfig {
 		Self {
 			hostname: host.to_string(),
 			port: 22,
-			user: whoami::username(),
+			user: whoami::username().unwrap_or_default(),
 			identity_file: Vec::new(),
 			proxy_jump: None,
 			control_master: false,

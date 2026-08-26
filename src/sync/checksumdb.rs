@@ -1,6 +1,6 @@
 use crate::error::Result;
 use crate::integrity::Checksum;
-use fjall::{Config, Keyspace, PartitionHandle};
+use fjall::{Database, Keyspace, KeyspaceCreateOptions};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -23,11 +23,8 @@ struct ChecksumEntry {
 /// Uses fjall LSM-tree for efficient key-value storage.
 #[allow(dead_code)] // Integration with SyncEngine pending
 pub struct ChecksumDatabase {
-	/// Keyspace owns the underlying storage - serves as lifetime anchor for partition.
-	/// The partition handle holds references into the keyspace's memory; dropping keyspace
-	/// invalidates the partition. Rust's ownership rules (keyspace field) ensure this never happens.
+	database: Database,
 	keyspace: Keyspace,
-	partition: PartitionHandle,
 }
 
 #[allow(dead_code)] // Integration with SyncEngine pending
@@ -41,14 +38,12 @@ impl ChecksumDatabase {
 	/// Open or create checksum database in destination directory
 	pub fn open(dest_path: &Path) -> Result<Self> {
 		let db_path = dest_path.join(Self::DB_DIR);
+		let database = Database::builder(&db_path).open()?;
 
 		// Create keyspace with default config
-		let keyspace = Config::new(&db_path).open()?;
+		let keyspace = database.keyspace(Self::PARTITION_NAME, || KeyspaceCreateOptions::default())?;
 
-		// Open or create partition for checksums
-		let partition = keyspace.open_partition(Self::PARTITION_NAME, Default::default())?;
-
-		Ok(Self { keyspace, partition })
+		Ok(Self { database, keyspace })
 	}
 
 	/// Convert path to database key (UTF-8 lossy bytes)
@@ -73,7 +68,7 @@ impl ChecksumDatabase {
 		let (mtime_secs, mtime_nanos) = system_time_to_parts(mtime);
 
 		// Get entry from database
-		let value = match self.partition.get(&key)? {
+		let value = match self.keyspace.get(&key)? {
 			Some(v) => v,
 			None => {
 				tracing::debug!("Cache miss for {}", path.display());
@@ -128,7 +123,7 @@ impl ChecksumDatabase {
 		// Serialize and store
 		let key = Self::path_to_key(path);
 		let value = postcard::to_allocvec(&entry)?;
-		self.partition.insert(&key, &value)?;
+		self.keyspace.insert(&key, &value)?;
 
 		tracing::debug!("Stored checksum for {}", path.display());
 		Ok(())
@@ -137,11 +132,11 @@ impl ChecksumDatabase {
 	/// Clear all cached checksums
 	pub fn clear(&self) -> Result<()> {
 		// Collect all keys first (can't delete while iterating)
-		let keys: Vec<_> = self.partition.iter().map(|item| item.map(|(k, _)| k.to_vec())).collect::<std::result::Result<_, _>>()?;
+		let keys: Vec<_> = self.keyspace.iter().map(|item| item.into_inner().map(|(k, _)| k.to_vec())).collect::<std::result::Result<_, _>>()?;
 
 		// Delete all entries
 		for key in keys {
-			self.partition.remove(&key)?;
+			self.keyspace.remove(&key)?;
 		}
 
 		tracing::info!("Cleared checksum database");
@@ -159,8 +154,8 @@ impl ChecksumDatabase {
 		// Collect paths to delete
 		let mut to_delete = Vec::new();
 
-		for item in self.partition.iter() {
-			let (key, _) = item?;
+		for item in self.keyspace.iter() {
+			let (key, _) = item.into_inner()?;
 			// Use same lossy conversion as path_to_key() for consistent matching
 			let path_str = String::from_utf8_lossy(&key);
 			let path = PathBuf::from(path_str.as_ref());
@@ -173,7 +168,7 @@ impl ChecksumDatabase {
 		// Delete stale entries
 		let deleted_count = to_delete.len();
 		for key in to_delete {
-			self.partition.remove(&key)?;
+			self.keyspace.remove(&key)?;
 		}
 
 		if deleted_count > 0 {
@@ -189,8 +184,8 @@ impl ChecksumDatabase {
 		let mut fast_count = 0;
 		let mut crypto_count = 0;
 
-		for item in self.partition.iter() {
-			let (key, value) = item?;
+		for item in self.keyspace.iter() {
+			let (key, value) = item.into_inner()?;
 			let entry: ChecksumEntry = postcard::from_bytes(&value)
 				.map_err(|e| crate::error::SyncError::Database(format!("Failed to deserialize checksum entry for {}: {}", String::from_utf8_lossy(&key), e)))?;
 
