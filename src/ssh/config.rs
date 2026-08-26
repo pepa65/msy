@@ -230,7 +230,7 @@ mod tests {
 		let config = SshConfig::new("example.com");
 		assert_eq!(config.hostname, "example.com");
 		assert_eq!(config.port, 22);
-		assert_eq!(config.user, whoami::username());
+		assert_eq!(config.user, whoami::username().unwrap());
 		assert!(config.identity_file.is_empty());
 		assert!(!config.control_master);
 	}

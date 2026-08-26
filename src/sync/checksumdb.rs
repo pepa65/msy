@@ -41,7 +41,7 @@ impl ChecksumDatabase {
 		let database = Database::builder(&db_path).open()?;
 
 		// Create keyspace with default config
-		let keyspace = database.keyspace(Self::PARTITION_NAME, || KeyspaceCreateOptions::default())?;
+		let keyspace = database.keyspace(Self::PARTITION_NAME, KeyspaceCreateOptions::default)?;
 
 		Ok(Self { database, keyspace })
 	}
