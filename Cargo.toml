@@ -108,10 +108,10 @@ exacl = { version = "0.13", optional = true }
 windows-sys = { version = "0.61", features = ["Win32_Storage_FileSystem"] }
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.8"
 tempfile = "3"
 proptest = "1"
-serial_test = "3.0"
+serial_test = "4"
 
 [[bench]]
 name = "sync_bench"
