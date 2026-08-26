@@ -1,7 +1,8 @@
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use msy::sync::scanner::FileEntry;
 use msy::sync::strategy::StrategyPlanner;
 use std::fs;
+use std::hint::black_box;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::SystemTime;

@@ -1,6 +1,7 @@
-use criterion::{BenchmarkId, Criterion, black_box, criterion_group, criterion_main};
+use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 use msy::sync::scanner::Scanner;
 use std::fs;
+use std::hint::black_box;
 use tempfile::TempDir;
 
 /// Create a test directory structure with given parameters

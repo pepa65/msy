@@ -1,7 +1,7 @@
 [alias]
 rel = "build --release"
 inst = "install --path ."
-clip = "clippy --release"
+clip = "clippy --release --all-targets --all-features -- -D warnings"
 pub = "publish"
 up = "update --verbose"
 

@@ -1,5 +1,6 @@
-use criterion::{BenchmarkId, Criterion, Throughput, black_box, criterion_group, criterion_main};
+use criterion::{BenchmarkId, Criterion, Throughput, criterion_group, criterion_main};
 use msy::compress::{Compression, compress, decompress};
+use std::hint::black_box;
 use std::io::Write;
 
 fn generate_test_data(size: usize, pattern: &str) -> Vec<u8> {
