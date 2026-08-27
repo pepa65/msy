@@ -1,6 +1,6 @@
 [![CI](https://github.com/pepa65/msy/workflows/CI/badge.svg)](https://github.com/pepa65/msy/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-# msy 0.6.0
+# msy 0.6.1
 **Modern musl rsync alternative - Fast, parallel file synchronization**
 
 ## Quick Start
@@ -96,7 +96,7 @@ Modern file synchronization tool
 
 ## Usage
 ```
-msy 0.6.0 - Modern musl rsync alternative - Fast, parallel file synchronization
+msy 0.6.1 - Modern musl rsync alternative - Fast, parallel file synchronization
 Usage: sy [OPTIONS] [SOURCE] [DESTINATION]
 
 Arguments:
