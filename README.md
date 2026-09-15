@@ -4,11 +4,21 @@
 **Modern musl rsync alternative - Fast, parallel file synchronization**
 
 ## Quick Start
+Install the sy binary in the PATH on both machines. Then:
 `sy /source /destination`
 
-That's it. Use `sy -h` for help.
+## Features
+- **Delta sync** — Only transfers changed bytes (rsync algorithm)
+- **Parallel transfers** — Configurable worker count (`-j`)
+- **Resume support** — Automatically resumes interrupted syncs
+- **Integrity verification** — Optional xxHash3 checksums (`--verify`)
+- **Bidirectional sync** — Two-way sync with conflict resolution
+- **Watch mode** — Continuous file monitoring
+- **SSH transport** — Binary protocol, faster than SFTP for bulk transfers
+- **S3 support** — AWS S3, Cloudflare R2, Backblaze B2 (experimental)
+- **Metadata preservation** — Symlinks, permissions, xattrs, ACLs
 
-## When to Use `msy`
+## When to Use `msy` vs `rsync`
 **`msy` excels at:**
 * Repeated local syncs — 2-3x faster after first run
 * Large files on APFS/BTRFS/XFS — 40x+ faster via COW reflinks
@@ -68,17 +78,6 @@ sy ~/src ~/dest -j 1                     # Sequential (many tiny files)
 ```
 
 **Trailing slash:** `msy` follows `rsync` semantics — `/source` copies the directory, `/source/` copies contents only.
-
-## Features
-- **Delta sync** — Only transfers changed bytes (rsync algorithm)
-- **Parallel transfers** — Configurable worker count (`-j`)
-- **Resume support** — Automatically resumes interrupted syncs
-- **Integrity verification** — Optional xxHash3 checksums (`--verify`)
-- **Bidirectional sync** — Two-way sync with conflict resolution
-- **Watch mode** — Continuous file monitoring
-- **SSH transport** — Binary protocol, faster than SFTP for bulk transfers
-- **S3 support** — AWS S3, Cloudflare R2, Backblaze B2 (experimental)
-- **Metadata preservation** — Symlinks, permissions, xattrs, ACLs
 
 ## Platform Support
 | Platform | Status                    |
