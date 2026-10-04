@@ -2,6 +2,7 @@
 name = "msy"
 version = "0.6.8"
 edition = "2024"
+rust_version = "1.90.0"
 authors = ["Nick Russo <nijaru7@gmail.com>", "<github.com/pepa65>"]
 description = "Modern musl rsync alternative - Fast, parallel file synchronization"
 repository = "https://github.com/pepa65/msy"
