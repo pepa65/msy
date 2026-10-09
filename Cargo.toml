@@ -1,6 +1,6 @@
 [package]
 name = "msy"
-version = "0.6.9"
+version = "0.6.10"
 edition = "2024"
 rust-version = "1.90.0"
 authors = ["Nick Russo <nijaru7@gmail.com>", "<github.com/pepa65>"]
