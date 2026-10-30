@@ -2,7 +2,7 @@
 name = "msy"
 version = "0.6.14"
 edition = "2024"
-rust-version = "1.90.0"
+rust-version = "1.93.1"
 authors = ["Nick Russo <nijaru7@gmail.com>", "<github.com/pepa65>"]
 description = "Modern musl rsync alternative - Fast, parallel file synchronization"
 repository = "https://github.com/pepa65/msy"
@@ -71,7 +71,7 @@ hex = "0.4"
 base64 = "0.23"
 
 # Compression
-zstd = "0.13"  # Level 3: 8.7 GB/s, best ratio
+zstd = "0.14"  # Level 3: 8.7 GB/s, best ratio
 lz4_flex = "0.14"  # 23 GB/s, faster but lower ratio
 
 # Parallel processing
@@ -84,7 +84,7 @@ fastbloom = "0.17"  # Bloom filters for efficient deletion checks
 # SSH (Phase 2) - Optional feature
 ssh2 = { version = "0.9", optional = true, features = ["vendored-openssl"] }
 whoami = { version = "2", optional = true }
-dirs = "6"
+dirs = "7"
 regex = { version = "1.13", optional = true }
 futures = "0.3.31"
 
