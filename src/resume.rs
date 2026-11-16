@@ -4,6 +4,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
+#[cfg(test)]
+thread_local! {
+	static TEST_RESUME_DIR: std::cell::RefCell<Option<tempfile::TempDir>> = const { std::cell::RefCell::new(None) };
+}
+
 /// Default chunk size for resume transfers (1 MB)
 pub const DEFAULT_CHUNK_SIZE: usize = 1024 * 1024;
 
@@ -81,6 +86,11 @@ impl TransferState {
 
 	/// Get resume state directory (~/.cache/sy/resume/)
 	fn get_resume_dir() -> Result<PathBuf> {
+		#[cfg(test)]
+		if let Some(dir) = TEST_RESUME_DIR.with(|dir| dir.borrow().as_ref().map(|dir| dir.path().to_path_buf())) {
+			return Ok(dir);
+		}
+
 		let cache_dir = if let Ok(xdg_cache) = std::env::var("XDG_CACHE_HOME") {
 			PathBuf::from(xdg_cache)
 		} else if let Ok(home) = std::env::var("HOME") {
@@ -346,12 +356,32 @@ mod tests {
 		assert!(state.next_chunk().is_none());
 	}
 
+	struct IsolatedResumeDir;
+
+	impl IsolatedResumeDir {
+		fn new() -> Result<Self> {
+			let dir = tempfile::tempdir()?;
+			TEST_RESUME_DIR.with(|slot| {
+				assert!(slot.borrow().is_none());
+				slot.replace(Some(dir));
+			});
+			Ok(Self)
+		}
+	}
+
+	impl Drop for IsolatedResumeDir {
+		fn drop(&mut self) {
+			TEST_RESUME_DIR.with(|slot| {
+				slot.take();
+			});
+		}
+	}
+
 	#[test]
 	fn test_save_and_load() -> Result<()> {
-		// Use unique paths to avoid race conditions with parallel tests
-		let test_id = std::process::id();
-		let source = PathBuf::from(format!("/tmp/test_source_{}.txt", test_id));
-		let dest = PathBuf::from(format!("/tmp/test_dest_{}.txt", test_id));
+		let _resume_dir = IsolatedResumeDir::new()?;
+		let source = PathBuf::from("/tmp/test_source.txt");
+		let dest = PathBuf::from("/tmp/test_dest.txt");
 		// Use a fixed time to avoid precision issues during serialization roundtrip
 		let mtime = SystemTime::UNIX_EPOCH + Duration::from_secs(1600000000);
 		let mut state = TransferState::new(&source, &dest, 5000, mtime, DEFAULT_CHUNK_SIZE);
@@ -378,9 +408,9 @@ mod tests {
 
 	#[test]
 	fn test_load_stale_state() -> Result<()> {
-		let test_id = std::process::id();
-		let source = PathBuf::from(format!("/tmp/test_stale_source_{}.txt", test_id));
-		let dest = PathBuf::from(format!("/tmp/test_stale_dest_{}.txt", test_id));
+		let _resume_dir = IsolatedResumeDir::new()?;
+		let source = PathBuf::from("/tmp/test_stale_source.txt");
+		let dest = PathBuf::from("/tmp/test_stale_dest.txt");
 		let base_time = SystemTime::UNIX_EPOCH + Duration::from_secs(1600000000);
 		let old_mtime = base_time - Duration::from_secs(3600);
 		let state = TransferState::new(&source, &dest, 1000, old_mtime, DEFAULT_CHUNK_SIZE);
@@ -398,6 +428,7 @@ mod tests {
 
 	#[test]
 	fn test_clear_all() -> Result<()> {
+		let _resume_dir = IsolatedResumeDir::new()?;
 		let source1 = PathBuf::from("/tmp/test_clear_source1.txt");
 		let dest1 = PathBuf::from("/tmp/test_clear_dest1.txt");
 		let source2 = PathBuf::from("/tmp/test_clear_source2.txt");

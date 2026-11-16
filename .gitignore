@@ -1,18 +1,4 @@
-# Rust
 /sy
 /target/
-**/*.rs.bk
-*.pdb
-
-# Testing
 /test-files/
 /benchmark-results/
-
-# Temporary session files
-ANALYSIS.md
-FINAL_STATUS.md
-REVIEW.md
-SESSION_SUMMARY.md
-PERFORMANCE_ANALYSIS.md
-man/
-__pycache__

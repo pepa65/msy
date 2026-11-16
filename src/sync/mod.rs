@@ -1056,7 +1056,8 @@ impl<T: Transport + 'static> SyncEngine<T> {
 						s.verification_failures += 1;
 						tracing::warn!("Verification failed for {}", task.dest_path.display());
 					} else if self.verification_mode != ChecksumType::None
-						&& !self.dry_run && matches!(task.action, SyncAction::Create | SyncAction::Update)
+						&& !self.dry_run
+						&& matches!(task.action, SyncAction::Create | SyncAction::Update)
 						&& task.source.as_ref().map(|s| !s.is_dir).unwrap_or(false)
 					{
 						s.files_verified += 1;
@@ -1064,7 +1065,8 @@ impl<T: Transport + 'static> SyncEngine<T> {
 
 					// Resume State Update & Periodic Checkpointing
 					if self.resume
-						&& !self.dry_run && matches!(task.action, SyncAction::Create | SyncAction::Update)
+						&& !self.dry_run
+						&& matches!(task.action, SyncAction::Create | SyncAction::Update)
 						&& let Ok(mut state_guard) = resume_state.lock()
 						&& let Some(state) = state_guard.as_mut()
 					{
