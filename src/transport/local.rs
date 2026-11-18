@@ -307,7 +307,7 @@ impl Transport for LocalTransport {
 
 				// Preserve modification time
 				if let Ok(mtime) = source_meta.modified() {
-					let _ = filetime::set_file_mtime(&dest, filetime::FileTime::from_system_time(mtime));
+					let _ = std::fs::set_times(&dest, std::fs::FileTimes::new().set_modified(mtime));
 				}
 
 				tracing::debug!("Sparse copy complete: {} ({} bytes logical size)", source.display(), bytes_written);
@@ -338,7 +338,7 @@ impl Transport for LocalTransport {
 
 			// Preserve modification time
 			if let Ok(mtime) = source_meta.modified() {
-				let _ = filetime::set_file_mtime(&dest, filetime::FileTime::from_system_time(mtime));
+				let _ = std::fs::set_times(&dest, std::fs::FileTimes::new().set_modified(mtime));
 			}
 
 			Ok(bytes_written)
@@ -802,7 +802,7 @@ impl Transport for LocalTransport {
 
 			// Preserve modification time
 			if let Ok(mtime) = source_meta.modified() {
-				let _ = filetime::set_file_mtime(&dest, filetime::FileTime::from_system_time(mtime));
+				let _ = std::fs::set_times(&dest, std::fs::FileTimes::new().set_modified(mtime));
 			}
 
 			tracing::debug!("Streaming copy complete: {} ({} bytes)", source.display(), bytes_transferred);

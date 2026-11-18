@@ -13,6 +13,7 @@ use anyhow::{Context, Result};
 use bytes::{Buf, Bytes, BytesMut};
 use std::collections::HashMap;
 use std::path::{Component, Path, PathBuf};
+use std::time::{Duration, UNIX_EPOCH};
 use tokio::fs::{self, File, OpenOptions};
 use tokio::io::{AsyncReadExt, AsyncSeekExt, AsyncWriteExt, SeekFrom};
 
@@ -339,8 +340,12 @@ impl Receiver {
 				}
 
 				// Set mtime
-				let mtime = filetime::FileTime::from_unix_time(pending.entry.mtime, 0);
-				let _ = tokio::task::spawn_blocking(move || filetime::set_file_mtime(&full_path, mtime)).await?;
+				let seconds = pending.entry.mtime;
+				let offset = Duration::from_secs(seconds.unsigned_abs());
+				let mtime = if seconds < 0 { UNIX_EPOCH.checked_sub(offset) } else { UNIX_EPOCH.checked_add(offset) };
+				if let Some(mtime) = mtime {
+					let _ = tokio::task::spawn_blocking(move || std::fs::set_times(&full_path, std::fs::FileTimes::new().set_modified(mtime))).await?;
+				}
 
 				self.stats.files_ok += 1;
 				self.stats.bytes_transferred += pending.bytes_written;

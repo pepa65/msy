@@ -34,7 +34,7 @@ fn test_ignore_times_forces_comparison() {
 
 	// Make mtimes match
 	let source_meta = fs::metadata(source.path().join("file.txt")).unwrap();
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_last_modification_time(&source_meta)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(source_meta.modified().unwrap())).unwrap();
 
 	// First sync without --ignore-times should skip (mtime and size match)
 	let output = Command::new(sy_bin()).args([&format!("{}/", source.path().display()), dest.path().to_str().unwrap()]).output().unwrap();
@@ -48,7 +48,7 @@ fn test_ignore_times_forces_comparison() {
 
 	// Now change dest content but keep mtime the same
 	fs::write(dest.path().join("file.txt"), "different").unwrap();
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_last_modification_time(&source_meta)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(source_meta.modified().unwrap())).unwrap();
 
 	// With --ignore-times, should detect the difference and update
 	let output = Command::new(sy_bin())
@@ -105,7 +105,7 @@ fn test_size_only_skips_mtime_check() {
 
 	// Touch source to make it newer
 	let now = std::time::SystemTime::now();
-	filetime::set_file_mtime(source.path().join("file.txt"), filetime::FileTime::from_system_time(now)).unwrap();
+	fs::set_times(source.path().join("file.txt"), fs::FileTimes::new().set_modified(now)).unwrap();
 
 	// With --size-only, should NOT update (same size)
 	let output = Command::new(sy_bin())
@@ -159,7 +159,7 @@ fn test_checksum_compares_content() {
 
 	// Make dest newer (normally would not be updated)
 	let future = std::time::SystemTime::now() + Duration::from_secs(3600);
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_system_time(future)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(future)).unwrap();
 
 	// With --checksum, should update based on content difference
 	let output = Command::new(sy_bin())
@@ -186,7 +186,7 @@ fn test_checksum_skips_identical_content() {
 
 	// Make mtimes different
 	let past = std::time::SystemTime::now() - Duration::from_secs(3600);
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_system_time(past)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(past)).unwrap();
 
 	let output = Command::new(sy_bin())
 		.args(["--checksum", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()])
@@ -276,7 +276,7 @@ fn test_update_skips_newer_dest() {
 
 	// Make dest file newer than source
 	let future = std::time::SystemTime::now() + Duration::from_secs(3600);
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_system_time(future)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(future)).unwrap();
 
 	// With -u, should skip the file (dest is newer)
 	let output = Command::new(sy_bin())
@@ -302,7 +302,7 @@ fn test_update_long_flag() {
 
 	// Make dest newer
 	let future = std::time::SystemTime::now() + Duration::from_secs(3600);
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_system_time(future)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(future)).unwrap();
 
 	let output = Command::new(sy_bin())
 		.args(["--update", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()])
@@ -327,10 +327,10 @@ fn test_update_copies_older_dest() {
 	// Make source newer than dest
 	thread::sleep(Duration::from_millis(100));
 	let now = std::time::SystemTime::now();
-	filetime::set_file_mtime(source.path().join("file.txt"), filetime::FileTime::from_system_time(now)).unwrap();
+	fs::set_times(source.path().join("file.txt"), fs::FileTimes::new().set_modified(now)).unwrap();
 
 	let past = now - Duration::from_secs(3600);
-	filetime::set_file_mtime(dest.path().join("file.txt"), filetime::FileTime::from_system_time(past)).unwrap();
+	fs::set_times(dest.path().join("file.txt"), fs::FileTimes::new().set_modified(past)).unwrap();
 
 	let output = Command::new(sy_bin())
 		.args(["-u", &format!("{}/", source.path().display()), dest.path().to_str().unwrap()])

@@ -1,8 +1,8 @@
 [package]
 name = "msy"
-version = "0.6.19"
+version = "0.7.0"
 edition = "2024"
-rust-version = "1.93.1"
+rust-version = "1.99"
 authors = ["Nick Russo <nijaru7@gmail.com>", "<github.com/pepa65>"]
 description = "Modern musl rsync alternative - Fast, parallel file synchronization"
 repository = "https://github.com/pepa65/msy"
@@ -38,7 +38,7 @@ clap = { version = "4", features = ["derive", "env", "color"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 toml = "1"
-chrono = "0.4.45"
+jiff = { version = "1", default-features = false, features = ["std"] }
 
 # Async runtime (Phase 2: used for transport abstraction)
 tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "fs", "io-util", "io-std", "process", "time", "sync", "signal"] }
@@ -46,7 +46,6 @@ async-trait = "0.1"
 
 # Filesystem
 ignore = "0.4"
-filetime = "0.2"
 tempfile = "3"
 glob = "0.3"
 notify = { version = "8", optional = true }
@@ -86,7 +85,7 @@ ssh2 = { version = "0.9", optional = true, features = ["vendored-openssl"] }
 whoami = { version = "2", optional = true }
 dirs = "7"
 regex = { version = "1.13", optional = true }
-futures = "0.3.31"
+futures = "0.3"
 
 # Database (Phase 5b)
 fjall = "3"
@@ -95,14 +94,11 @@ fjall = "3"
 object_store = { version = "0.14", features = ["aws", "gcp"], optional = true }
 bytes = "1.11.1"
 crossbeam-channel = "0.5.15"
-memmap2 = "0.9.9"
 bitflags = "2.10.0"
-
-quick-xml = "0.42"
 
 # Platform-specific dependencies
 [target.'cfg(unix)'.dependencies]
-xattr = "1.6"
+xattr = "1"
 exacl = { version = "0.13", optional = true }
 
 [target.'cfg(windows)'.dependencies]

@@ -862,7 +862,7 @@ impl SshTransport {
 
 		// Get mtime from source and set on dest
 		let mtime = self.get_mtime(source).await?;
-		filetime::set_file_mtime(&dest_buf, filetime::FileTime::from_system_time(mtime)).map_err(SyncError::Io)?;
+		std::fs::set_times(&dest_buf, std::fs::FileTimes::new().set_modified(mtime)).map_err(SyncError::Io)?;
 
 		Ok(TransferResult::new(file_size))
 	}
@@ -1918,7 +1918,7 @@ impl Transport for SshTransport {
 					}
 
 					// Set mtime on local file
-					filetime::set_file_mtime(&dest_buf, filetime::FileTime::from_system_time(mtime_systime))
+					std::fs::set_times(&dest_buf, std::fs::FileTimes::new().set_modified(mtime_systime))
 						.map_err(|e| SyncError::Io(std::io::Error::new(e.kind(), format!("Failed to set mtime on {}: {}", dest_buf.display(), e))))?;
 
 					Ok(TransferResult::new(bytes_transferred))

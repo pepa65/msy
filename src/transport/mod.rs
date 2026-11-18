@@ -239,7 +239,7 @@ pub trait Transport: Send + Sync {
 		drop(file);
 
 		// Set mtime
-		filetime::set_file_mtime(path, filetime::FileTime::from_system_time(mtime))?;
+		std::fs::set_times(path, std::fs::FileTimes::new().set_modified(mtime))?;
 
 		Ok(())
 	}

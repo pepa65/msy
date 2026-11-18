@@ -1,4 +1,5 @@
 use crate::error::{Result, SyncError};
+use jiff::{Timestamp, tz::Offset};
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{BufReader, BufWriter};
@@ -118,14 +119,18 @@ impl ResumeState {
 		}
 
 		// Parse and validate timestamps
-		let started_at = chrono::DateTime::parse_from_rfc3339(&self.started_at)
+		let started_at = self
+			.started_at
+			.parse::<Timestamp>()
 			.map_err(|e| SyncError::Io(std::io::Error::new(std::io::ErrorKind::InvalidData, format!("Invalid started_at timestamp: {}", e))))?;
 
-		let checkpoint_at = chrono::DateTime::parse_from_rfc3339(&self.checkpoint_at)
+		let checkpoint_at = self
+			.checkpoint_at
+			.parse::<Timestamp>()
 			.map_err(|e| SyncError::Io(std::io::Error::new(std::io::ErrorKind::InvalidData, format!("Invalid checkpoint_at timestamp: {}", e))))?;
 
 		// Check timestamps are reasonable (not in the future + reasonable window)
-		let now = chrono::Utc::now();
+		let now = Timestamp::now();
 		if started_at > now {
 			return Err(SyncError::Io(std::io::Error::new(std::io::ErrorKind::InvalidData, "Started timestamp is in the future")));
 		}
@@ -158,7 +163,8 @@ impl ResumeState {
 			}
 
 			// Parse completed_at timestamp
-			chrono::DateTime::parse_from_rfc3339(&file.completed_at)
+			file.completed_at
+				.parse::<Timestamp>()
 				.map_err(|e| SyncError::Io(std::io::Error::new(std::io::ErrorKind::InvalidData, format!("Invalid completed_at timestamp for file: {}", e))))?;
 		}
 
@@ -225,8 +231,8 @@ impl ResumeState {
 
 /// Format a timestamp for serialization (ISO 8601)
 pub fn format_timestamp(time: SystemTime) -> String {
-	let datetime: chrono::DateTime<chrono::Utc> = time.into();
-	datetime.to_rfc3339()
+	let timestamp = Timestamp::try_from(time).expect("timestamp outside the supported range");
+	timestamp.display_with_offset(Offset::UTC).to_string()
 }
 
 #[cfg(test)]
@@ -435,13 +441,13 @@ mod tests {
 		let state_path = dest.join(STATE_FILE_NAME);
 
 		// Write state with future timestamp
-		let future = chrono::Utc::now() + chrono::Duration::days(1);
+		let future = Timestamp::now() + std::time::Duration::from_secs(86_400);
 		let invalid_state = serde_json::json!({
 			"version": STATE_VERSION,
 			"source": src,
 			"destination": dst,
-			"started_at": future.to_rfc3339(),  // Future!
-			"checkpoint_at": future.to_rfc3339(),
+			"started_at": future.display_with_offset(Offset::UTC).to_string(),  // Future!
+			"checkpoint_at": future.display_with_offset(Offset::UTC).to_string(),
 			"flags": {
 				"delete": false,
 				"exclude": [],
@@ -467,15 +473,15 @@ mod tests {
 		let (src, dst) = test_absolute_paths();
 		let state_path = dest.join(STATE_FILE_NAME);
 
-		let start = chrono::Utc::now();
-		let checkpoint = start - chrono::Duration::hours(1); // Before start!
+		let start = Timestamp::now();
+		let checkpoint = start - std::time::Duration::from_secs(3_600); // Before start!
 
 		let invalid_state = serde_json::json!({
 			"version": STATE_VERSION,
 			"source": src,
 			"destination": dst,
-			"started_at": start.to_rfc3339(),
-			"checkpoint_at": checkpoint.to_rfc3339(),
+			"started_at": start.display_with_offset(Offset::UTC).to_string(),
+			"checkpoint_at": checkpoint.display_with_offset(Offset::UTC).to_string(),
 			"flags": {
 				"delete": false,
 				"exclude": [],
@@ -501,13 +507,13 @@ mod tests {
 		let (src, dst) = test_absolute_paths();
 		let state_path = dest.join(STATE_FILE_NAME);
 
-		let now = chrono::Utc::now();
+		let now = Timestamp::now();
 		let invalid_state = serde_json::json!({
 			"version": STATE_VERSION,
 			"source": src,
 			"destination": dst,
-			"started_at": now.to_rfc3339(),
-			"checkpoint_at": now.to_rfc3339(),
+			"started_at": now.display_with_offset(Offset::UTC).to_string(),
+			"checkpoint_at": now.display_with_offset(Offset::UTC).to_string(),
 			"flags": {
 				"delete": false,
 				"exclude": [],
@@ -520,14 +526,14 @@ mod tests {
 					"action": "create",
 					"size": 100,
 					"checksum": "xxhash3:abc",
-					"completed_at": now.to_rfc3339()
+					"completed_at": now.display_with_offset(Offset::UTC).to_string()
 				},
 				{
 					"relative_path": "file2.txt",
 					"action": "create",
 					"size": 200,
 					"checksum": "xxhash3:def",
-					"completed_at": now.to_rfc3339()
+					"completed_at": now.display_with_offset(Offset::UTC).to_string()
 				}
 			],
 			"total_files": 1,  // Only 1 but 2 completed!
@@ -548,13 +554,13 @@ mod tests {
 		let (src, dst) = test_absolute_paths();
 		let state_path = dest.join(STATE_FILE_NAME);
 
-		let now = chrono::Utc::now();
+		let now = Timestamp::now();
 		let invalid_state = serde_json::json!({
 			"version": STATE_VERSION,
 			"source": src,
 			"destination": dst,
-			"started_at": now.to_rfc3339(),
-			"checkpoint_at": now.to_rfc3339(),
+			"started_at": now.display_with_offset(Offset::UTC).to_string(),
+			"checkpoint_at": now.display_with_offset(Offset::UTC).to_string(),
 			"flags": {
 				"delete": false,
 				"exclude": [],
@@ -567,7 +573,7 @@ mod tests {
 					"action": "invalid_action",  // Invalid!
 					"size": 100,
 					"checksum": "xxhash3:abc",
-					"completed_at": now.to_rfc3339()
+					"completed_at": now.display_with_offset(Offset::UTC).to_string()
 				}
 			],
 			"total_files": 10,

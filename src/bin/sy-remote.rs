@@ -214,7 +214,7 @@ fn main() -> anyhow::Result<()> {
 			if let Some(mtime_secs) = mtime {
 				use std::time::{Duration, UNIX_EPOCH};
 				let mtime = UNIX_EPOCH + Duration::from_secs(mtime_secs);
-				let _ = filetime::set_file_mtime(&output_path, filetime::FileTime::from_system_time(mtime));
+				let _ = std::fs::set_times(&output_path, std::fs::FileTimes::new().set_modified(mtime));
 			}
 
 			// Report success with bytes written
@@ -257,7 +257,7 @@ fn main() -> anyhow::Result<()> {
 			if let Some(mtime_secs) = mtime {
 				use std::time::{Duration, UNIX_EPOCH};
 				let mtime = UNIX_EPOCH + Duration::from_secs(mtime_secs);
-				let _ = filetime::set_file_mtime(&output_path, filetime::FileTime::from_system_time(mtime));
+				let _ = std::fs::set_times(&output_path, std::fs::FileTimes::new().set_modified(mtime));
 			}
 
 			// Report success with total data bytes written (not file size)

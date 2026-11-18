@@ -308,8 +308,8 @@ impl BisyncStateDb {
 			// Write header
 			writeln!(file, "# sy bisync {}", Self::FORMAT_VERSION)?;
 			writeln!(file, "# sync_pair: {} <-> {}", self.source_path.display(), self.dest_path.display())?;
-			let now = chrono::Utc::now();
-			writeln!(file, "# last_sync: {}", now.to_rfc3339())?;
+			let now = crate::sync::resume::format_timestamp(SystemTime::now());
+			writeln!(file, "# last_sync: {}", now)?;
 
 			// Collect and sort entries for deterministic output
 			let mut entries: Vec<_> = self.states.iter().collect();
